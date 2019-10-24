@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<title>index</title>
+	<!-- <script src="https://gw.alipayobjects.com/os/lib/antv/g2/3.4.10/dist/g2.min.js"></script> -->
+	<!-- <script src="http://cdn.highcharts.com.cn/highcharts/highcharts.js"></script> -->
+	<!-- <script src="https://code.highcharts.com.cn/highcharts/modules/heatmap.js"></script> -->
+	<script src="static/js/jquery-1.9.2.min.js"></script>
+	<!-- highstock -->
+	<script src="https://code.highcharts.com/stock/highstock.js"></script>
+
+	<style>
+		* {
+			padding: 0px;
+			margin: 0px;
+		}
+
+		.row {
+			padding: 0px;
+			margin: 0px;
+		}
+
+		.alignCenter {
+			text-align: center;
+		}
+
+		#tags {
+			padding-right: 0px;
+			margin: 0px;
+			padding-top: 12px;
+			height: 15px;
+			padding-bottom: 26px;
+			background: #FFF none repeat scroll 0% 0% !important;
+		}
+
+		#tags li {
+			background: #FFF none repeat scroll 0% 0% !important;
+			border-bottom: 1px solid #FFF !important;
+			font-size: 12px;
+			color: #4f4f4f;
+			float: left;
+			list-style-type: none;
+			padding: 4px 10px;
+			cursor: pointer;
+		}
+
+		#tags li.selectTag {
+			margin-bottom: -1px;
+			position: relative;
+			height: 15px;
+			border-width: 2px 1px 1px;
+			border-style: solid;
+			border-color: #F80 #DEDEDE #F8F8F8;
+			z-index: 10;
+		}
+
+		.tagContent {
+			height: auto;
+			position: relative;
+		}
+
+		#tagContent2 {
+			display: none;
+		}
+		h4{
+			margin-top:2px; 
+			margin-bottom: 2px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="row">
+		<div class="col-md-4" style="height:100vh;border-right:1px solid #9e9e9e">
+			<div>
+				<div id="con">
+					<ul id="tags">
+						<li class="selectTag">
+							<a>1-16</a>
+						</li>
+						<li class="">
+							<a>17-32</a>
+						</li>
+					</ul>
+					<div>
+						<div class="row" style="background-color: #fff;line-height:40px;border-bottom: 1px solid #ddd">
+							<div class="col-md-3">索引</div>
+							<div class="col-md-3">频率</div>
+							<div class="col-md-3">使能</div>
+							<div class="col-md-3">查看</div>
+						</div>
+						<div class="tagContent">
+							<div id="tagContent1">
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">1</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">
+										<input type="checkbox" aria-label="...">
+
+									</div>
+									<div class="col-md-3">
+										<button type="button" class="btn btn-default" aria-label="Left Align" style="height:38px">
+											<span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
+										  </button>
+									</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">2</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">4</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">5</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">6</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">7</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">8</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">9</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">10</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">11</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">12</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">13</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">14</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">15</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">16</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">17</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">18</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">19</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">1</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">1</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">1</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">1</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">1</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">1</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">1</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">1</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">1</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">1</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">1</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">1</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:38px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">1</div>
+									<div class="col-md-3">1</div>
+								</div>
+							</div>
+							<div id="tagContent2">
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-2">2</div>
+									<div class="col-md-4" style="margin:0px;padding:0px auto;text-align: center">
+										<input type="text" class="form-control" placeholder="请输入频率"
+											style="height:40px;width:80%;">
+									</div>
+									<div class="col-md-3"
+										style="border-right:1px solid #dddd;border-left:1px solid #ddd">2</div>
+									<div class="col-md-3">2</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-4">
+
+									</div>
+									<div class="col-md-4">
+
+									</div>
+									<div class="col-md-4">2</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-4">2</div>
+									<div class="col-md-4">2</div>
+									<div class="col-md-4">2</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									<div class="col-md-4">2</div>
+									<div class="col-md-4">2</div>
+									<div class="col-md-4">2</div>
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									22
+								</div>
+								<div class="row"
+									style="background-color: #fff;line-height:38px;border-bottom: 1px solid #ddd">
+									22
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4" style="height:100vh;background-color: #fff;border-right:1px solid #9e9e9e">
+			<!--中频显示区域-->
+			<div class="row" style="height:50vh;border-bottom:1px solid #9E9E9E;">
+				<!-- 波形图的显示位置 -->
+				<div id="IFWf">
+
+				</div>
+			</div>
+			<div class="row" style="height:50vh;">
+				<div style="text-align:center">
+					<h4 >瀑布图</h4>
+				</div>
+				<!-- 语谱图的显示位置 -->
+				
+				<div id="IFLS" style="position:relative;">
+
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4" style="height:100vh;">
+			<!--窄带显示区域-->
+			<div class="row" style="height:50vh;border-bottom:1px solid #9E9E9E">
+				<div style="text-align:center">
+					<h4>语谱图</h4>
+				</div>
+				
+				<div id="NBWF" style="position:relative;">
+
+				</div>
+			</div>
+			<div class="row" style="height:50vh">
+				<div id="NBLS"></div>
+			</div>
+		</div>
+	</div>
+	<script src="static/IFWF.js"></script>
+	<script src="static/waterfull.js"></script>
+	<!-- <script src="static/IFLS.js"></script> -->
+	<script src="static/NBLS.js"></script>
+	<script src="static/returnColor.js"></script>
+	<!-- <script src="static/NBWF.js"></script> -->
+	<script>
+		//中频数据波形
+		var IFWf = document.getElementById('IFWf');
+		//中频数据频谱
+		var IFLS = document.getElementById('IFLS');
+		var waterFull=new waterfull({
+			id:'IFLS',
+			option:{
+				color:'#sss',
+				height:'350',
+				width:'450',
+				axis:"Vertical",
+				textX:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+				textY:[14,13,12,11,10,9,8,7,6,5,4,3,2,1],
+				textA:"时间(s)",
+				textB:"频率(MHZ)"
+			}
+		});
+		var fw=new waterfull({
+			id:'NBWF',
+			option:{
+				color:"#ddd",
+				height:'350',
+				width:'450',
+				axis:"Horizontal",
+				textX:[1,2,3,4],
+				textY:[10,20,30,40],
+				textA:"频率(MHZ)",
+				textB:"时间(s)"
+			}
+		})		
+		var $li=$("#tags li");
+	$li.click(function(){
+		$s=$(this);
+		if($s.hasClass('selectTag')){
+			
+		}else{
+			for(var i=0;i<$li.length;i++){
+				if($li.eq(i).hasClass('selectTag')){
+					$li.eq(i).removeClass("selectTag");
+					break;
+				}
+			}
+			$s.addClass("selectTag");
+		}
+		if($s.hasClass('selectTag')){
+			$("#tagContent1").attr({style:'display:none'});
+			$("#tagContent2").attr({style:'display:none'});
+			if($("li").index(this)==0){
+				$("#tagContent1").attr({style:'display:block'});
+			}
+			if($("li").index(this)==1){
+				$("#tagContent2").attr({style:'display:block'});
+			
+			}			
+		}
+	});
+	</script>
+</body>
+
+</html>

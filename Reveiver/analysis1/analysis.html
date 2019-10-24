@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+<style>
+body {
+	/* background:  */
+	/* background:#fff url('backImage.jpg')  repeat-x; */
+	
+}
+
+#container {
+	width: 100%;
+	height: 100%;
+}
+
+.theSame {
+	position: relative;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 80px;
+	background-color: #303a30;
+	border-bottom: 1px solid white;
+}
+
+.font {
+	display: inline-block;
+	color: whitesmoke;
+	font-size: x-large;
+	width: 10%;
+}
+
+input {
+	position: relative;
+	margin: 0;
+	background-color: #0C0C0C;
+	color: whitesmoke;
+	height: 30px;
+	font-size: 1.3em;
+	width: 25%;
+}
+
+.name {
+	display: block;
+	width: 100%;
+	position: relative;
+}
+
+button, select {
+	margin: 10px 10px 0 0;
+	padding: 0;
+	font-size: 1.3em;
+	width: 10%;
+	height: 35px;
+	border-radius: 5px 5px;
+}
+
+#port {
+	width: 10%;
+}
+
+#shePing, #dingP {
+	height: 160px;
+}
+
+#saoP {
+	height: 240px;
+}
+
+#Gselect, #SCFselect {
+	width: 15%;
+}
+
+* {
+	padding: 0;
+	margin: 0;
+}
+
+nav {
+	width: 100%;
+	/* height:70px; */
+	background-color: #0C0C0C;
+}
+
+#canvasContainer {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	/*background-color: #303f30;*/
+}
+
+#canvasContainer .Showtab {
+	width: 100%;
+	height: 60px;
+	background-color: #000;
+}
+
+#canvasContainer .Showtab ul {
+	list-style: none;
+	margin-left: 5%;
+}
+
+#canvasContainer .Showtab li {
+	float: left;
+	margin-left: 3%;
+}
+
+#canvasContainer .Showtab li a {
+	display: inline-block;
+	height: 30px;
+	/* line-height: 30px; */
+	padding: 15px 15px;
+	text-decoration: none;
+	color: aliceblue;
+	border-radius: 25% 25%;
+	transition: all 0.5s;
+}
+
+#canvasContainer .Showtab li a:hover {
+	display: inline-block;
+	background-color: aliceblue;
+	color: #000;
+	padding: 15px 15px;
+	/* line-height: 30px; */
+	height: 30px;
+}
+
+#canvasContainer .showContainer {
+	position: relative;
+	/*background-color: burlywood;*/
+	top: 60px;
+	width: 100%;
+	height: 800px;
+}
+
+#canvasContainer .showContainer .wavedDiv {
+	width: 100%;
+	height: 800px;
+	text-align: center; /*文字水平居中*/
+	line-height: 400px;
+}
+
+#canvasContainer .showContainer .wavedDiv .show1 {
+	position: absolute;
+	text-align: center;
+	width: 50%;
+	height: 400px;
+	border-bottom: 1px solid #000;
+	border-right: 1px solid #000;
+}
+
+#canvasContainer .showContainer .wavedDiv .show2 {
+	position: absolute;
+	float: left;
+	/*left:50%;*/
+	text-align: center;
+	margin-left: 50%;
+	width: 50%;
+	height: 400px;
+	border-left: 1px solid #000;
+	border-bottom: 1px solid #000;
+}
+
+#canvasContainer .showContainer .wavedDiv .show3 {
+	position: absolute;
+	float: left;
+	margin-top: 400px;
+	text-align: center;
+	width: 50%;
+	height: 400px;
+	border-top: 1px solid #000;
+	border-right: 1px solid #000;
+}
+
+#canvasContainer .showContainer .wavedDiv .show4 {
+	position: absolute;
+	float: left;
+	text-align: center;
+	margin-top: 400px;
+	margin-left: 50%;
+	/*left:50%;*/
+	width: 50%;
+	height: 400px;
+	border-top: 1px solid #000;
+	border-left: 1px solid #000;
+}
+
+.footDiv {
+	width: 100%;
+	height: 60px;
+	background-color: #000;
+	float: left;
+	/*margin-bottom:0px;*/
+	position: fixed;
+	bottom: 0;
+}
+.controlDiv{
+  position:relative;
+ 
+ margin:auto;
+ width:600px;
+ height:300px;
+}
+.controlDiv input{
+   
+   width:150px;
+   
+}
+</style>
+<script type="text/javascript" src="dataWorker.js"></script>
+<script type="text/javascript" src="./jsFFT.js"></script>
+<script type="text/javascript" src="data.js"></script>
+<script type="text/javascript" src="echarts.common.min.js"></script>
+
+<script type="text/javascript" src="returnColor.js"></script>
+<script type="text/javascript"src="../common/js/jquery/v1.7.1/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="powerCanvas.js"></script>
+<script type="text/javascript" src="waterfullCanvas.js"></script>
+<script type="text/javascript" src="baseband.js"></script>
+
+<!-- <script type="text/javascript" src="testData.js" ></script> -->
+
+
+</head>
+
+
+<body>
+	<div id="canvasContainer">
+		<div class="Showtab">
+			<ul>
+				<li><a onclick="selectCanvasTab(0)"> <span>时频分析</span>
+				</a></li>
+				<li><a onclick="selectCanvasTab(1)"> <span>参数配置</span>
+				</a></li>
+			</ul>
+		</div>
+		<div class="showContainer">
+			<div id="wavedCanvasContainer">
+				<div class="wavedDiv">
+					<div class="show1">
+						<canvas id="canvas1" width="612" height="320"
+							style="background-color: #000;margin:50px auto;"></canvas>
+						
+						<audio controls autoplay style="display:none;"></audio>
+						<input type="button" onclick="play()" value="播放" style="position:absolute;margin-left: 5px;display='none'" /> 
+					</div>
+					<div class="show2">
+						<canvas id="canvas2" width="612" height="320" style="background-color:#000"></canvas>
+						<!-- <canvas id="canvas3" width="612" height="320"
+							style="position:absolute;margin-top: 50px;margin-left:-600px"></canvas> -->
+					</div>
+					<div class="show3">
+						<canvas id="waterfull" width="612" height="320"
+							style="background-color: #000;margin:50px auto;"></canvas>
+					</div>
+					<div class="show4"  id="show4">
+						<!-- <canvas id="canvas6" width="612" height="320"
+							style="background-color: #000;margin:50px auto;"></canvas> -->
+					</div>
+				</div>
+			</div>
+			<div id="spectrumCanvasContainer" style="display: none">
+				<div class="controlDiv">
+					<h3>基带控制</h3>
+					<input type="text" id="inputVal" placeholder="请输入1-32"/>
+					<button onclick="sendSure()">确定</button>
+					<br>
+					<h3>中频控制</h3>
+					<input type="text" id="inputVal2" placeholder="请输入1-8"/>
+					<button onclick="sendIntermediatecontrol()">确定</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+
+	<script type="text/javascript">
+	    
+	    function sendSure(){
+	     var inputVal=document.getElementById('inputVal').value-1;
+	      $.ajax({
+				type : 'post',
+				url : '../../SituEarth/receiveAction!ChannelControl.action',
+				data: {count:inputVal},
+				async : false, //异步，false为阻塞
+				timeout : 90000, //40秒后超时,
+				success : function(json, textStatus) {
+					console.log(json);
+				},
+				error : function(XMLHttpRequest, textStatus) {
+					console.log("任务请求失败,报错信息：");
+					console.log(XMLHttpRequest.responseText);
+				}
+			});
+	    }
+	    function sendIntermediatecontrol(){
+	        var inputVal=document.getElementById('inputVal2').value-1;
+	        $.ajax({
+				type : 'post',
+				url : '../../SituEarth/receiveAction!IntermediateFrequency.action',
+				data: {count:inputVal},
+				async : false, //异步，false为阻塞
+				timeout : 90000, //40秒后超时,
+				success : function(json, textStatus) {
+					console.log(json);
+				},
+				error : function(XMLHttpRequest, textStatus) {
+					console.log("任务请求失败,报错信息：");
+					console.log(XMLHttpRequest.responseText);
+				}
+			});    
+	    }
+	/*     var powercanvas=new powerCanvas({
+	       canvasId:"canvas1"
+	    }) */
+	    var waterfullcanvas=new waterfullCanvas({
+	      canvasId1:"canvas1",
+	      canvasId2:"waterfull"
+	    })
+	    var baseband=new baseBand({
+	       canvasId1:"canvas2"
+	    }) 
+	
+	
+	    var chart4=echarts.init(document.getElementById('show4'))
+	    var chunkData=[];
+	    var playData=[];
+	    var Acontext = new (window.webkitAudioContext || window.AudioContext)();
+		var audio=new Audio();
+		var source = Acontext.createMediaElementSource(audio);
+		var date=[];
+		for(var i=0;i<128;i++){
+		    date.push(i);
+		};
+		Acontext.sampleRate=16000;
+		var option = {
+			//    title:{
+			//        text:'音谱'
+			//    },
+			backgroundColor:'#000',
+			tooltip : {},
+			xAxis : {
+				type : 'category',
+				Color:'#fff',
+				boundaryGap : false,
+				splitLine:{
+				  show:false
+				},
+				axisLine:{
+				  lineStyle:{
+				    color:'#fff'
+				  }
+				},
+			    data:date
+			},
+			yAxis : {
+				type : 'value',
+				Color:'#fff',
+				splitLine:{
+				  show:false
+				},
+				axisLine:{
+				  lineStyle:{
+				    color:'#fff'
+				  }
+				},
+				boundaryGap : [ 0, '100%' ]
+			},
+			dataZoom : [
+				{
+					type : 'slider',
+					xAxisIndex : 0,
+					start : 0,
+					end : 1000
+				},
+				{
+					type : 'inside',
+					xAxisIndex : 0,
+					start : 0,
+					end : 200
+				}
+			],
+			series : [ {
+				name : '基带数据',
+				type : 'line', 
+				//        smooth:true,
+				//        stack:'a',
+				showSymbol : 'fasle',
+				lineStyle:{
+				   color:['#fff'],
+				   width:0.8
+				},
+				//        areaStyle:{
+				//            normal:{}
+				//        },
+				data : []
+			} ]
+		};
+	/* 	var testTimer=setInterval(function(){
+		    
+		    chunkData=testData;
+		    console.log(testData.length);
+		    if(chunkData.length===18750){
+				   /* console.log(chunkData); */
+				   
+				    /*playData.push(audioData.encodeWAV(chunkData))
+				    renderChart4(chunkData);
+					
+					/* playData.push(chunkData);
+					   baseband.getData(chunkData.splice(0,16383)); */
+					/*chunkData=[];
+					date=[];
+				}
+		},1000) */
+		/* testData.splice(0,) */
+		
+		chart4.setOption(option);
+		var worker=new Worker('dataWorker.js');
+		worker.postMessage('12');
+		worker.onmessage=function(ev){
+		   console.log(ev.data); 
+		} 
+		/* var socket = new WebSocket("ws://169.254.10.11:8080/SituEarth/ws/websocketshort/"+"user"); */
+	    var audio =document.querySelector('audio');
+	/* 	socket.onmessage = function(ev) {
+			//基带数据。
+			var array = []; 
+			array = ev.data.split(',');
+			solutionData(array);
+			date=[];
+		 	 for (var i = 0; i < array.length; i++) {
+				chunkData.push(parseFloat(parseInt(array[i])));
+				
+				/* date.push(i); */
+			/* 	if(chunkData.length===18750){
+				   /* console.log(chunkData); */
+				   //后台记不住？所以只能在每次websocket数据过来后，存下一定的长度去驱动其他的函数。
+				    /* playData.push(audioData.encodeWAV(chunkData))
+				    renderChart4(chunkData); */
+				    /* var postData=chunkData.splice(0,16384);
+				    console.log(postData.length); */
+				    /*setTimeout(function(){
+				      
+				      
+				    },1000) */
+				     					
+					/* playData.push(chunkData);
+					   baseband.getData(chunkData.splice(0,16383)); */
+					/*chunkData=[];
+					date=[];
+				}
+			} 
+		} */
+		var allData={};
+		var chunkData1=[];
+		allData.arr0=[],allData.arr1=[],allData.arr2=[],allData.arr3=[],allData.arr4=[],allData.arr5=[],allData.arr6=[],allData.arr7=[],
+		allData.arr8=[],allData.arr9=[],allData.arr10=[],allData.arr11=[],allData.arr12=[],allData.arr13=[],allData.arr14=[],allData.arr15=[],allData.arr16=[],
+		allData.arr17=[],allData.arr18=[],allData.arr19=[],allData.arr20=[],allData.arr21=[],allData.arr22=[],allData.arr23=[],allData.arr24=[],
+		allData.arr25=[],allData.arr26=[],allData.arr27=[],allData.arr28=[],allData.arr29=[],allData.arr30=[],allData.arr31=[];
+		
+	    function renderChart4 (chunkData){
+	       var date=[];
+	       var drawData=chunkData.splice(0,128);
+	       /*console.log(JSON.stringify(chunkData))*/
+	       for(var i=0;i<drawData.length;i++){
+	           date.push(i);
+	       }
+	       chart4.setOption({
+						 xAxis : {
+							data :date 
+						}, 
+						series : [ {
+							data : drawData
+						} ]
+					});
+	    }
+		var tabs = document.getElementsByClassName('Showtab')[0].getElementsByTagName('a');
+		var wavedCanvas = document.getElementById('wavedCanvasContainer');
+		var spectrumCanvas = document.getElementById('spectrumCanvasContainer');
+		var allCanvas = document.getElementById('allCanvas');
+		var handleDiv = document.getElementsByClassName('handleDiv')[0];
+		var installDiv = document.getElementsByClassName('installDiv')[0];
+		// var tabs1=document.getElementsByClassName('handleTab')[0].getElementsByTagName('a');
+		/* var AudioContext = AudioContext || webkitAudioContext; */
+		var analyser = Acontext.createAnalyser();
+		var canvas1 = document.getElementById('canvas1');
+		var grid = canvas1.getContext("2d");
+		var canvas2 = document.getElementById('canvas2');
+		var fftCtx = canvas2.getContext('2d');
+		var waterfull=document.getElementById('waterfull');
+		var waterfullContext=waterfull.getContext('2d'); 
+		/* var canvas4 = document.getElementById('canvas6')
+		var curveLineCtx = canvas4.getContext('2d');
+		curveLineCtx.translate(0.5, canvas4.height / 2 + 0.5); */
+		var createScript = Acontext.createScriptProcessor || Acontext.createJavaScriptNode;
+		var recorder = createScript.apply(Acontext, [16384, 1, 1]);
+		source.connect(recorder);
+		recorder.connect(Acontext.destination);
+		grid.translate(0.5, 0.5);	
+		
+        
+		// console.log(analyser.getByteTimeDomainData(dataArray))
+		var length = (analyser.frequencyBinCount * 48000 / Acontext.sampleRate | 0); 
+		/* var length=analyser.fftSize; */
+		var output = new Uint8Array(length);
+		var output1 = new Uint8Array(length);
+		var dataArray = new Uint32Array(length);
+		analyser.getByteTimeDomainData(output);
+		var index = 0;
+		function drawWave(data){
+			curveLineCtx.clearRect(0, 0, canvas4.width, canvas4.height);
+			curveLineCtx.strokeStyle = '#fff';
+			curveLineCtx.beginPath();
+			var index = 0;
+			for (var i = 0; i < data.length; i++) {
+				curveLineCtx.lineTo(i * (canvas4.width / data.length),  canvas4.height-parseInt(data[i]));
+				index++;
+			}
+			curveLineCtx.stroke();
+		}
+		drawnum+=2;
+	    /*waterfull.addEventListener('mousewheel', function() {
+			var e = event || window.event;
+			var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+			console.log(delta);
+			if (e.pageX || e.pageY) { //兼容做到ie9
+				x = e.pageX;
+				y = e.pageY;
+			} else {
+				x = e.clientX + document.body.scrollLeft || document.documentElement.scrollLeft;
+				y = e.clientY + document.body.scrollTop || document.documentElement.scrollTop;
+			}
+		}, false); */
+		
+		var drawnum=0;
+		 var timer = setInterval(function() { 
+		
+				    
+			 /*   $.ajax({
+				type : 'get',
+				url : '../../SituEarth/receiveAction!getdata.action',
+				async : false, //异步，false为阻塞
+				timeout : 90000, //40秒后超时,
+				success : function(json, textStatus) { 
+				    if(!json){
+				       return ;
+				    }
+				    
+				 /*    grid.clearRect(0,0,canvas1.width,canvas1.height);
+				    grid.strokeStyle='#fff';
+				    grid.fillStyle="#fff";
+				    grid.beginPath();
+				    var index=0;
+				    for(var i=0;i<json.length/2;i++){
+				        grid.lineTo(i*2*(canvas1.width/json.length*2),canvas1.height-100-parseInt(json[i]));
+				        index++;
+				    }
+				    grid.stroke(); */
+					/* var imgData = waterfullContext.createImageData(2, 2);
+					var positionX = 0;
+					for (var j = 0; j < json.length/2;j++) {
+						var imgData = returnColor(json[j], imgData);
+						waterfullContext.putImageData(imgData, positionX, drawnum>320?318:drawnum);
+						positionX+=2;
+					}
+				
+					drawnum+=1;
+					if(drawnum>320){
+					    var img = waterfullContext.getImageData(0, 0, 512, 320);
+				        waterfullContext.putImageData(img, 0, -2);
+					} */
+
+			 	/*},
+				error : function(XMLHttpRequest, textStatus) {}
+			});  */
+			play();
+			/* $.ajax({
+						type : 'post',
+						url : '../../SituEarth/receiveAction!BaseGenerationFft.action',
+						data : {lists :JSON.stringify(testData.splice(0,16384))},
+						async : false, //异步，false为阻塞
+						timeout : 90000, //40秒后超时,
+						success : function(datas, textStatus) {
+								 baseband.getData(datas); 
+							},
+							error : function(XMLHttpRequest, textStatus) {
+							}
+				    })
+			 */
+			
+		 },1000); 
+		 
+		function play() {
+		   if(playData.length<1) return;
+			var myBuffer = Acontext.createBuffer(1, 16384, Acontext.sampleRate),
+				source = Acontext.createBufferSource();
+	
+			var createScript = Acontext.createScriptProcessor || Acontext.createJavaScriptNode;
+			var recorder = createScript.apply(Acontext, [ 16384, 1, 1 ]);
+			source.connect(recorder);
+			recorder.connect(Acontext.destination);
+			recorder.onaudioprocess = function(ev) {
+				/* ev.outputBuffer.copyToChannel(playData.shift() || new Float32Array(16384), 0, 0); */
+			}
+			
+			if(playData.length>1){
+			   audio.src=window.URL.createObjectURL(playData[0]);
+			   analyser.getByteTimeDomainData(output);
+			    playData.shift();
+			  /*  audio.addEventListener('ended',function(){
+			   
+			    
+			     console.log(playData);
+			     audio.src=window.URL.createObjectURL(playData[0]);
+			   },false) */
+			}
+		}
+	
+
+		//添加头部;
+		var audioData = {
+			size : 0, //录音文件长度
+			buffer : [], //录音缓存
+			inputSampleRate : Acontext.sampleRate, //输入采样率
+			inputSampleBits : 16, //输入采样数位 8, 16
+			outputSampleRate : (44100 / 6), //输出采样率
+			oututSampleBits : 8, //输出采样数位 8, 16
+			input : function(data) {
+	
+				this.buffer.push(new Float32Array(data));
+				this.size += data.length;
+			},
+			compress : function(data1) { //合并压缩
+				//合并
+				/* var data = new Float32Array(data1.size);
+				var offset = 0;
+				for (var i = 0; i < data1.length; i++) {
+				console.log(offset);
+					data.set(data1[i], offset);
+					offset += this.buffer[i].length;
+				} */
+				//压缩
+				var compression = parseInt(this.inputSampleRate / this.outputSampleRate);
+				var length = data1.length / compression;
+				var result = new Float32Array(length);
+				var index = 0,
+					j = 0;
+				while (index < length) {
+					result[index] = data1[j];
+					j += compression;
+					index++;
+				}
+	
+				return result;
+			},
+			encodeWAV : function(data) {
+				var sampleRate = Math.min(Acontext.sampleRate, 16384);
+				var sampleBits = Math.min(16, 8);
+				/* var bytes = this.compress(data); */ 
+				 var bytes=data; 
+	
+				var dataLength = bytes.length * (sampleBits / 8);
+				var buffer = new ArrayBuffer(44 + dataLength);
+				var data = new DataView(buffer);
+	
+				var channelCount = 1; //单声道
+				var offset = 0;
+	
+				var writeString = function(str) {
+					for (var i = 0; i < str.length; i++) {
+						data.setUint8(offset + i, str.charCodeAt(i));
+					}
+				}
+	
+				// 资源交换文件标识符 
+				writeString('RIFF');
+				offset += 4;
+				// 下个地址开始到文件尾总字节数,即文件大小-8 
+				data.setUint32(offset, 36 + dataLength, true);
+				offset += 4;
+				// WAV文件标志
+				writeString('WAVE');
+				offset += 4;
+				// 波形格式标志 
+				writeString('fmt ');
+				offset += 4;
+				// 过滤字节,一般为 0x10 = 16 
+				data.setUint32(offset, 16, true);
+				offset += 4;
+				// 格式类别 (PCM形式采样数据) 
+				data.setUint16(offset, 1, true);
+				offset += 2;
+				// 通道数 
+				data.setUint16(offset, channelCount, true);
+				offset += 2;
+				// 采样率,每秒样本数,表示每个通道的播放速度 
+				data.setUint32(offset, sampleRate, true);
+				offset += 4;
+				// 波形数据传输率 (每秒平均字节数) 单声道×每秒数据位数×每样本数据位/8 
+				data.setUint32(offset, channelCount * sampleRate * (sampleBits / 8), true);
+				offset += 4;
+				// 快数据调整数 采样一次占用字节数 单声道×每样本的数据位数/8 
+				data.setUint16(offset, channelCount * (sampleBits / 8), true);
+				offset += 2;
+				// 每样本数据位数 
+				data.setUint16(offset, sampleBits, true);
+				offset += 2;
+				// 数据标识符 
+				writeString('data');
+				offset += 4;
+				// 采样数据总数,即数据总大小-44 
+				data.setUint32(offset, dataLength, true);
+				offset += 4;
+				// 写入采样数据 
+				if (sampleBits === 8) {
+					for (var i = 0; i < bytes.length; i++, offset++) {
+						var s = Math.max(-1, Math.min(1, bytes[i]));
+						var val = s < 0 ? s * 0x8000 : s * 0x7FFF;
+						val = parseInt(255 / (65535 / (val + 32768)));
+						data.setInt8(offset, val, true);
+					}
+				} else {
+					for (var i = 0; i < bytes.length; i++, offset += 2) {
+						var s = Math.max(-1, Math.min(1, bytes[i]));
+						data.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+					}
+				}
+	
+				return new Blob([ data ], {type : 'audio/wav'});
+			}
+		};
+		
+		//div控制区
+		function selectCanvasTab(index) {
+			if (index === 0) {
+				wavedCanvas.style.display = 'block';
+				spectrumCanvas.style.display = 'none';
+			// allCanvas.style.display='none';
+			}
+			if (index === 1) {
+				wavedCanvas.style.display = 'none';
+				spectrumCanvas.style.display = 'block';
+			// allCanvas.style.display='none';
+			}
+			if (index === 2) {
+				wavedCanvas.style.display = 'none';
+				spectrumCanvas.style.display = 'none';
+			// allCanvas.style.display='block';
+			}
+		}
+		function choceHandle(index) {
+			console.log(index);
+			if (index === 0) {
+				handleDiv.style.display = 'block';
+				installDiv.style.display = 'none';
+			}
+			if (index === 1) {
+				handleDiv.style.display = 'none';
+				installDiv.style.display = 'block';
+			}
+		}
+	</script>
+
+	<!-- <script type="text/javascript" src="Cango-13v15-min.js"></script>
+<script type="text/javascript" src="CangoAxes-4v04-min.js"></script>
+<script type="text/javascript" src="echarts.common.min.js"></script>
+<script type="text/javascript" src ="jquery.min.js"></script>
+<script type="text/javascript" src = "function.js"></script> -->
+</body>
+</html>
