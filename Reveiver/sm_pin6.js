@@ -8,9 +8,13 @@ var sm_pin = (function() {
 		this.markerList = [];
 		this.dataInCoorSpace = null;
 		this.zlc = 1000; //纵向量程，最大和最小数中的绝对值大的
+		this.level;
+		this.noNum = -1000000;//未输入数据时的默认值
 		this.init()
 	}
 	_.prototype.init = function() {
+		//console.log("init--FFT");
+		this.level = this.noNum;
 		var canvas = document.createElement('canvas');
 		var doc = document.getElementById(this.id);
 		this.canvas = doc.appendChild(canvas);
@@ -36,7 +40,7 @@ var sm_pin = (function() {
 		var center = $("#input_center").val() * 1000;
 		var span = $("#input_span").val() * 1000;
 		var _start_f = parseInt(center - span / 2);
-		if (_start_f < -18750 / 2)
+		if (_start_f < -18750 / 2)//超出频率范围判断，最大18750Hz
 			_start_f = -18750 / 2;
 		var _end_f = parseInt(center + span / 2);
 		if (_end_f > 18750 / 2)
@@ -66,42 +70,58 @@ var sm_pin = (function() {
 		this.ctx.strokeStyle = "#ddd";
 		this.ctx.font = "14px Arial";
 		this.ctx.textAlign = "right";
-		var li = this.canvas.height * 0.8 / 100; //100为最大值
-		for (var i = 0; i < this.canvas.height * 0.8 + 1; i++) {
-			if (i % parseInt(this.canvas.height * 0.8 / 10) === 0 && i !== 0) {
-				// var aa = Math.round(i*li);//2.08333为limit
-				//   	  var bb = Math.round(aa/10);
-				/* var myheigth = this.canvas.height * 0.8;
-				aa = Math.round((i - myheigth / 2) * (this.zlc / (myheigth / 2))); //四舍五入取整，包含负整数
+		var myheigth = this.canvas.height * 0.8;
+		//console.log("myheigth--", myheigth);
+		if (this.level != this.noNum) {
+			var li = this.canvas.height * 0.8 / 100; //100为最大值
+			for (var i = 0; i < this.canvas.height * 0.8 + 1; i++) {
+				if (i % parseInt(this.canvas.height * 0.8 / 10) === 0 && i !== 0) {
+					var aa = Math.round((i - myheigth) * (this.zlc / myheigth)) + this.level; //四舍五入取整，包含负整数 
+					//console.log(i, "-aa-1---", aa);
+					//aa = parseInt(aa*10/10);
+					//console.log(i, "-aa-2---", aa);
+					//console.log("aa-2---", parseInt(aa));
 
-
-				var cc = Math.round(i / li);
-				this.ctx.fillText(cc,
-					this.canvas.width * 0.1 - 10,
-					this.canvas.height * 0.9 - i + 10)
-				this.ctx.stroke() */
-				var aa;
-				var myheigth = this.canvas.height * 0.8;
-				if (this.zlc == 1000) { //初始化时纵向量程为1000
-					aa = Math.round((i - myheigth / 2) * (this.zlc / (myheigth / 2))); //5.5472为limit = max / myCanvasHeigth 
-				} else { //有数据输入时，纵向量程不为1000
-					aa = Math.round((i - myheigth / 2) * (this.zlc / (myheigth / 2))); //四舍五入取整，包含负整数 
+					this.ctx.fillText(aa,
+						this.canvas.width * 0.1 - 10,
+						this.canvas.height * 0.9 - i + 6);
+					//console.log("pin-drawVTick----", parseInt(i), vtxt);
+					this.ctx.stroke()
 				}
-				var vtxt;
-				vtxt = Math.round(aa);
-				this.ctx.fillText(vtxt,
-					this.canvas.width * 0.1 - 10,
-					this.canvas.height * 0.9 - i + 6)
-				this.ctx.stroke()
 			}
+		} else {
+			var li = this.canvas.height * 0.8 / 100; //100为最大值
+			for (var i = 0; i < this.canvas.height * 0.8 + 1; i++) {
+				if (i % parseInt(this.canvas.height * 0.8 / 10) === 0 && i !== 0) {
 
+					var aa;
+					var myheigth = this.canvas.height * 0.8;
+					//console.log("myheigth--", myheigth);
+					if (this.zlc == 1000) { //初始化时纵向量程为1000
+						//console.log("this.zlc--", this.zlc);
+						aa = Math.round((i - myheigth / 2) * (this.zlc / (myheigth / 2))); //5.5472为limit = max / myCanvasHeigth 
+					} else { //有数据输入时，纵向量程不为1000
+						aa = Math.round((i - myheigth / 2) * (this.zlc / (myheigth / 2))); //四舍五入取整，包含负整数 
+					}
+					//console.log(i, "-aa-1---", aa);
+					//console.log("aa-2---", parseInt(aa));
+					var vtxt;
+					vtxt = Math.round(aa);
+					this.ctx.fillText(vtxt,
+						this.canvas.width * 0.1 - 10,
+						this.canvas.height * 0.9 - i + 6)
+					//console.log("pin-drawVTick----", parseInt(i), vtxt);
+					this.ctx.stroke()
+				}
+
+			}
 		}
 
 
-		// this.ctx.fillText("单位:dB",
-		// 	this.canvas.width * 0.1 - 10,
-		// 	this.canvas.height * 0.9 - i - 10)
-		// this.ctx.stroke()
+		this.ctx.fillText("单位:dB",
+			this.canvas.width * 0.1 - 10,
+			this.canvas.height * 0.9 - i + 30)
+		this.ctx.stroke()
 
 	}
 	_.prototype.drawRect = function() {
@@ -193,7 +213,7 @@ var sm_pin = (function() {
 	//    	}
 	//    }
 
-	//绘制数据
+	//绘制图形
 	_.prototype.drawData = function(data) {
 		this.data = data;
 
@@ -215,12 +235,35 @@ var sm_pin = (function() {
 		var min_index = data.indexOf(min);
 		// var center_min = center_point - parseInt(myCanvasWidth * 0.8); //按像素点和数据点对应排列，中心频点范围最小值，即数据点范围起点下标
 		// var center_max = center_point + parseInt(myCanvasWidth * 0.8); //
-		if (ma >= mi)
+		//console.log("center_min--", center_min);
+		/* if (ma >= mi)
 			this.zlc = ma;
 		else
-			this.zlc = mi;
-		if (this.zlc > 10) {
-			this.zlc = parseInt(this.zlc * 1.1 / 10) * 10;
+			this.zlc = mi; */
+		var _level = $("#input_level").val(); //设置参考幅值时，幅值最大为参考幅值，为空时是自动幅值模式。
+		if (_level != "")
+			this.level = parseFloat(_level);
+		else
+			this.level = this.noNum;
+		//console.log("this.level--", this.level)
+		if (this.level != this.noNum) {
+			if (mi > 10) {
+				this.zlc = this.level + parseInt(mi * 1.1 / 10) * 10;
+				//console.log("pin--add-10%-this.zlc--", this.zlc);
+			} else
+				this.zlc = this.level + mi;
+
+			//console.log("pin--this.zlc--", this.zlc);
+		} else { //为空时是自动幅值模式
+			if (ma >= mi)
+				this.zlc = ma;
+			else
+				this.zlc = mi;
+			//console.log("pin--this.zlc--", this.zlc);
+			if (this.zlc > 10) {
+				this.zlc = parseInt(this.zlc * 1.1 / 10) * 10;
+				//console.log("pin--add-10%-this.zlc--", this.zlc);
+			}
 		}
 		var limit = this.zlc / myCanvasHeigth;
 		//重绘横向标尺 this.drawHTick()
@@ -232,53 +275,50 @@ var sm_pin = (function() {
 			this.dataInCoorSpace = data.length / (this.canvas.width * 0.8);
 			this.ctx.beginPath();
 			this.ctx.strokeStyle = '#00FF00'; //#FF0000
-			/* 
-			var a = myCanvasWidth / 2 - 10;
+			//console.log("this.canvas.width-", this.canvas.width, this.canvas.width * 0.8)
+			//console.log("this.canvas.height-", this.canvas.height, this.canvas.height * 0.8)
+
+			/* var a = myCanvasWidth / 2 - 10;
 			var b = myCanvasWidth / 2 + 10;
 			var p = center_point - myCanvasWidth / 2;
+			console.log("a-b-", a, b, p); */
 
-			for (var i = 0; i < data.length; i++) {
-				if (i < 10) {
-					var yy = this.canvas.height / 2 - data[i] / (limit * 2) + 0.5;
+
+			//console.log("this.dataInCoorSpace--", this.dataInCoorSpace);
+			if (this.level != this.noNum) {
+				/* var aaaa1 = 0;
+				console.log(aaaa1, "--bbbb--", this.canvas.height * 0.1 + (this.level - aaaa1) / limit);
+				console.log("height * 0.1--", this.canvas.height * 0.1);
+				var aaaa2 = -100;
+				console.log(aaaa2, "--bbbb--", this.canvas.height * 0.1 + (this.level - aaaa2) / limit);
+				console.log("height * 0.9--", this.canvas.height * 0.9); */
+				for (var i = 0; i < this.canvas.width * 0.8; i++) {
+					if (max == 0 && min == this.noNum) {
+						//console.log("max == min == 0"); //全0的数据为中间一条线
+						this.ctx.lineTo(this.canvas.width * 0.1 + i + 0.5, this.canvas.height * 0.1 + (this.level - 0) / limit);
+					} else {
+						var aa = data[parseInt(i * this.dataInCoorSpace)];
+						var bb = this.canvas.height * 0.1 + (this.level - aa) / limit; //
+
+						//判断数值防止图形绘制到有效画布范围外面
+						if (bb > this.canvas.height * 0.9)
+							bb = this.canvas.height * 0.9;
+						else if (bb < this.canvas.height * 0.1)
+							bb = this.canvas.height * 0.1;
+						//var aa = Math.round((i - myheigth) * (this.zlc / myheigth)) + this.level; 
+						this.ctx.lineTo(this.canvas.width * 0.1 + i + 0.5, bb);
+					}
 				}
-
-				this.ctx.lineTo(this.canvas.width * 0.1 + i * this.dataInCoorSpace + 0.5, this.canvas.height / 2 - data[i] / (
-						limit * 2) +
-					0.5);
-				i += 1;
-			}
-			this.ctx.stroke(); */
-			/* for (var i = 0; i < myCanvasWidth; i++) {
-
-				//a < i && i < b
-				if (true) {
-					var x = this.canvas.width * 0.1 + i;
-					var y = this.canvas.height * 0.9 - data[p + i] / limit + 0.5;
-					this.ctx.lineTo(x, y);
+			} else {
+				for (var i = 0; i < this.canvas.width * 0.8; i++) {
+					if (max == 0 && min == this.noNum) {
+						//console.log("max == min == 0"); //全0的数据为中间一条线
+						this.ctx.lineTo(this.canvas.width * 0.1 + i + 0.5, this.canvas.height / 2);
+					} else {
+						this.ctx.lineTo(this.canvas.width * 0.1 + i + 0.5, this.canvas.height / 2 - data[parseInt(i * this.dataInCoorSpace)] /
+							(2 * limit));
+					}
 				}
-			} */
-
-			for (var i = 0; i < this.canvas.width * 0.8; i++) {
-				/* if (i < 10) {
-					var y = this.canvas.height * 0.8 / 2 - data[parseInt(i * this.dataInCoorSpace)] / (2 * limit);
-				} */
-				if (max == 0 && min == -1000000) {
-					this.ctx.lineTo(this.canvas.width * 0.1 + i + 0.5, this.canvas.height / 2);
-				} else {
-					this.ctx.lineTo(this.canvas.width * 0.1 + i + 0.5, this.canvas.height / 2 - data[parseInt(i *
-						this.dataInCoorSpace)] / (2 * limit));
-				}
-				//* 0.8   this.canvas.height  / 2 - data[parseInt(i *	this.dataInCoorSpace)] / (2 * limit)
-				//this.ctx.lineTo(this.canvas.width * 0.1 + i * this.dataInCoorSpace + 0.5, this.canvas.height / 2 - data[i] / (limit * 2) +0.5);
-				//this.ctx.lineTo(this.canvas.width * 0.1 + i + 0.5, this.canvas.height - data[parseInt(i * this.dataInCoorSpace)] /(2 * limit));
-				//this.ctx.lineTo(this.canvas.width * 0.1 + i * this.dataInCoorSpace + 0.5, this.canvas.height / 1 - data[i] / (limit * 2) +0.5);
-
-				/* if (parseInt(i * this.dataInCoorSpace) === data.length / 2) {
-					this.drawMark(this.canvas.width * 0.1 + i, this.canvas.height / 2 + data[parseInt(i *
-						this.dataInCoorSpace)] / limit - 5);
-					this.ctx.save();
-				} */
-				// i += 1;
 			}
 			this.ctx.stroke();
 		} else {
