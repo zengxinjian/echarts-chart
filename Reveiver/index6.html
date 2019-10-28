@@ -129,9 +129,9 @@
 						</ul>
 						<div style="min-width: 382px;">
 							<div class="row" style="background-color: #fff;border-bottom: 1px solid #ddd;margin-top: 30px;font-size: 30px;display: flex;flex-direction: row;">
-								<div class="col-md-3 ">索引</div>
+								<div class="col-md-3 ">输入</div>
 								<div class="col-md-6 ">频率(MHz)</div>
-								<div class="col-md-3 ">通道</div>
+								<div class="col-md-3 ">输出</div>
 
 							</div>
 							<div class="tagContent">
@@ -233,37 +233,37 @@
 				for (var i = 0; i < 50; i++) {
 					var oo = Math.sin(i) * 100;
 					arr.push(Math.round(oo));
-				}
-				console.log("arr----");
-				console.log(arr); */
+				}*/
+
+
 
 				if (e.data[0] === 'I') {
-					//console.log("start with I---------------");
+
 					e.data.shift(); //把数组的第一个元素从其中删除,并返回第一个元素的值
 					e.data.shift();
-					//console.log(e.data);
+
 					//var data = new Uint16Array(e.data);
-					//console.log(data);
+
 					//player.feed(data);
 					sinCurve.drawData(e.data.splice(0, 512));
 
 
 				} else if (e.data[0] === 'FFT') {
 					/* FFT 频谱数据*/
-					//console.log("start with else FFT---------------");
 
-					//console.log(e.data);
+
+
 					e.data.shift(); //把数组的第一个元素从其中删除,并返回第一个元素的值
 					e.data.shift();
 					var mdata = dealData(e.data);
 					smPin.drawData(mdata); //绘制频谱图.splice(0, 512)
-					//console.log("mdata--", mdata)
+
 					// sinCurve.drawData(e.data);//绘制波形图
 					spectrumChart.drawData(mdata);
 					//yupu.drawData(mdata);
-					// console.log(e.data);
+
 					// var data = new Uint16Array(e.data);
-					// console.log(data);
+
 					// player.feed(data);
 
 
@@ -274,13 +274,13 @@
 			// 根据页面输入框的数据,进行数据处理
 			function dealData(data) {
 				var result;
-				//console.log("dealData--", data)
+
 				var center = $("#input_center").val();
 				var span = $("#input_span").val();
 				var level = $("#input_level").val();
-				//console.log("center-span--", center, span);
+
 				if (center != "" && span != "") {
-					//console.log("dealData============")
+
 					center = center * 1000;
 					span = span * 1000;
 					var _start_f = parseInt(center - span / 2);
@@ -296,9 +296,9 @@
 					var _index = -1;
 					var n1 = parseInt((_start_f + 18750 / 2) / bb);
 					var n2 = parseInt((_end_f + 18750 / 2) / bb);
-					/* console.log("n1--", n1);
-					console.log("n2--", n2);
-					console.log("stride--", stride); */
+
+
+
 					var mdata = new Array();
 					if (stride < 1) {
 						for (var i = n1; i < n2; i++) {
@@ -309,33 +309,33 @@
 
 						for (var i = n1; i < n2; i++) {
 							//if(i>9040 && i<9080)
-							//console.log("data[i]--", data[i]);
+
 
 							//从每stride中挑选最大的数
 							///var a = data[9066]<data[9067];
-							//console.log("a--",a)
+
 							var aa = parseFloat(data[i]);
 							if (_max < aa) {
 								_max = aa;
-								//console.log("_max--", i,_max);
+
 							}
 							if (i % stride == 0) {
-								/* console.log("i--", i);
-								console.log("i % stride == 0---", i);
-								console.log("_max--", _max); */
+
+
+
 								mdata.push(_max);
 								_max = -1000000;
 								//_index = -1;
 							}
 						}
-						//console.log("mdata--", mdata)
+
 						return mdata;
 					}
 
 
 					//return center + span + level + "";
 				} else {
-					//console.log("else-----------")
+
 					return data;
 				}
 			}
@@ -349,6 +349,14 @@
 					var row3 = document.createElement("div");
 					var row4 = document.createElement("div");
 					var row5 = document.createElement("div");
+					var indexInp = document.createElement('input');
+					indexInp.type = "text";
+					indexInp.value = i + 1;
+					indexInp.style.height = "45px";
+					indexInp.style.fontSize = "18px";
+					indexInp.style.marginTop = "4px";
+					indexInp.style.textAlign = "center";
+					indexInp.className = "form-control";
 					var input = document.createElement('input');
 					input.type = "text";
 					input.id = "inp-"+i
@@ -383,10 +391,8 @@
 					containerDiv.style.borderBottom = "1px solid #ddd";
 					containerDiv.style.height = "54px";
 					containerDiv.style.lineHeight = "54px"
-					row1.style.fontSize = "25px";
 					row1.className = "col-md-3";
-					row1.innerText = i + 1;
-					row1.style.textAlign = "center";
+					row1.appendChild(indexInp);
 					row2.className = "col-md-6";
 					row2.appendChild(input);
 					row3.className = "col-md-3";
@@ -439,7 +445,6 @@
 				}
 			})
 
-
 			$('#changeChart').click(function() {
 				var arr = [];
 				$(this).parent().parent().find('input[type=text]').each(function() {
@@ -457,7 +462,7 @@
 				// timeout : 10000, //40秒后超时,
 				success: function(json, textStatus) {
 					sourceData = json;
-					console.log("json--", json);
+
 					if (null != json) {
 						$("#con input[type=text]").each(function(i) {
 							$(this).val(json[i].frequency);
@@ -477,7 +482,7 @@
 						async: true, //异步，false为阻塞
 						// timeout : 90000, //40秒后超时,
 						success: function(json, textStatus) {
-							console.log(json);
+
 							if (null != json) {
 								topsettingdata = json[0];
 								$('#topSetting input[type=text]').val(json[0].fp1)
@@ -509,7 +514,6 @@
 			$('#topSetting input[type=text]').on('blur', function(ev) {
 
 				topsettingdata.fp1 = $(this).val();
-				console.log(topsettingdata);
 				$.ajax({
 					type: 'post',
 					url: '../SituEarth/receiveAction!updatePage.action',
@@ -519,7 +523,9 @@
 					async: true, //异步，false为阻塞
 					timeout: 90000, //40秒后超时,nvidia
 
-					success: function(json, textStatus) {},
+					success: function(json, textStatus) {
+						console.log(json)
+					},
 					error: function(XMLHttpRequest, textStatus) {
 						console.log("任务请求失败,报错信息：");
 						console.log(XMLHttpRequest.responseText);
@@ -533,7 +539,6 @@
 					topsettingdata.fs1 = 0
 				}
 				topsettingdata.need_update = 1;
-				console.log(topsettingdata);
 				$.ajax({
 					type: 'post',
 					url: '../SituEarth/receiveAction!updatePage.action',
@@ -542,7 +547,9 @@
 					},
 					async: false, //异步，false为阻塞
 					timeout: 90000, //40秒后超时,
-					success: function(json, textStatus) {},
+					success: function(json, textStatus) {
+						console.log(json)
+					},
 					error: function(XMLHttpRequest, textStatus) {
 						console.log("任务请求失败,报错信息：");
 						console.log(XMLHttpRequest.responseText);
@@ -550,14 +557,12 @@
 				});
 			})
 			$('#topSetting #fs2').click(function(ev) {
-				console.log($(this).index())
 				if ($(this).prop("checked")) {
 					topsettingdata.fs2 = 1
 				} else {
 					topsettingdata.fs2 = 0
 				}
 				topsettingdata.need_update = 1;
-				console.log(topsettingdata);
 				$.ajax({
 					type: 'post',
 					url: '../SituEarth/receiveAction!updatePage.action',
@@ -566,7 +571,9 @@
 					},
 					async: false, //异步，false为阻塞
 					timeout: 90000, //40秒后超时,
-					success: function(json, textStatus) {},
+					success: function(json, textStatus) {
+						console.log(json)
+					},
 					error: function(XMLHttpRequest, textStatus) {
 						console.log("任务请求失败,报错信息：");
 						console.log(XMLHttpRequest.responseText);
@@ -574,16 +581,20 @@
 				});
 			})
 			
-			$('#con input[type=text]').on('blur', function() {
-				var _index = $(this).parent().parent().find('div').eq(0).text() - 1;
-				var data = sourceData[_index];
-				
-				data.frequency = $(this).val();
-				// if (enable) {
-				// 	data.enable = 1;
-				// } else {
-				// 	data.enable = 0;
-				// } 
+			// 频率回车事件
+			$("#con input[id^='inp']").keydown(function (e) {
+			  var curKey = e.which;
+			  if (curKey == 13) {
+				getFrequency($(this));
+				return false;
+			  }
+			});
+			function getFrequency(e) {
+				var textId = e.attr("id");
+				var _index = textId.substring(textId.indexOf('-')+1, textId.length);
+				var data = sourceData[_index] || {};
+				data.frequency = e.val();
+				data.enable = 1;
 				data.choice = 0;
 				data.need_update = 1;
 				$.ajax({
@@ -595,7 +606,6 @@
 					async: true, //异步，false为阻塞
 					timeout: 90000, //40秒后超时,
 					success: function(json, textStatus) {
-
 						$.ajax({
 							type: 'post',
 							url: '../SituEarth/receiveAction!ChannelControl.action',
@@ -618,17 +628,21 @@
 						console.log(XMLHttpRequest.responseText);
 					}
 				})
-			});
+			}
+			/* bind("propertychange input" */
 			
-			// bind("propertychange input"
-			
+			// 输出Radio值改变事件
 			$('#con input[type=radio]').change(function() {
 				//获取radio所在行的输入框内容,进行发送
-				var _index = $(this).parent().parent().find('div').eq(0).text() - 1;
-				var textValue = $(this).parent().parent().children(".col-md-6").children().val();
+				/*
+					var _index = $(this).parent().parent().find('div').eq(0).text() - 1;
+					var textValue = $(this).parent().parent().children(".col-md-6").children().val();
+				*/
 				var radio = $(this).attr("id");
 				var radioSub = radio.substring(radio.indexOf('-')+1, radio.length);
-				console.log("下标："+radioSub,"--------------", );
+				var textValue = $("#inp-"+radioSub).val();
+				var _index = radioSub;
+
 				// 禁用其他文本框，启用当前文本框
 				for(var i = 0;i< 32;i++){
 					$("#inp-"+i).attr("disabled","disabled");
@@ -636,14 +650,10 @@
 				$("#inp-"+radioSub).removeAttr("disabled");
 				
 				
-				var data = sourceData[_index];
+				var data = sourceData[_index] || {};
 				if (textValue != "") {
 					data.frequency = textValue;
-					/* if (enable) {
-						data.enable = 1;
-					} else {
-						data.enable = 0;
-					} */
+					data.enable = 1;
 					data.choice = 0;
 					data.need_update = 1;
 					$.ajax({
@@ -671,53 +681,6 @@
 									console.log(XMLHttpRequest.responseText);
 								}
 							});
-						},
-						error: function(XMLHttpRequest, textStatus) {
-							console.log("任务请求失败,报错信息：");
-							console.log(XMLHttpRequest.responseText);
-						}
-					})
-
-					var enable = $(this).prop("checked");
-					var _index = $(this).parent().parent().find('div').eq(0).text() - 1;
-					var data = sourceData[_index];
-					console.log("data---", data);
-					console.log("enable", enable);
-					if (enable) {
-						data.enable = 1;
-					} else {
-						data.enable = 0;
-					}
-					data.choice = 0;
-					data.need_update = 1;
-
-
-					$.ajax({
-						type: 'post',
-						url: '../SituEarth/receiveAction!update.action',
-						data: {
-							"json": JSON.stringify(data)
-						},
-						async: true, //异步，false为阻塞
-						timeout: 90000, //40秒后超时,
-						success: function(json, textStatus) {
-							$.ajax({
-								type: 'post',
-								url: '../SituEarth/receiveAction!ChannelControl.action',
-								data: {
-									count: _index
-								},
-								async: true, //异步，false为阻塞
-								timeout: 90000, //40秒后超时,
-								success: function(json, textStatus) {
-									console.log(json);
-								},
-								error: function(XMLHttpRequest, textStatus) {
-									console.log("任务请求失败,报错信息：");
-									console.log(XMLHttpRequest.responseText);
-								}
-							});
-
 						},
 						error: function(XMLHttpRequest, textStatus) {
 							console.log("任务请求失败,报错信息：");
@@ -783,8 +746,6 @@
 
 
 				/* date1.getTime() */
-				console.log(date1.getTime());
-				console.log(currentData);
 				for (var i = 0; i < 128; i++) {
 					date.push((i * 7 + date1.getTime()));
 					drawData.push(currentData[i])

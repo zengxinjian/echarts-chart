@@ -58,7 +58,6 @@ var sm_spectrogram=(function(){
 		if (_end_f > 18750 / 2)
 			_end_f = 18750 / 2;
 		var _length_f = _end_f - _start_f;
-		//console.log("_length_f--",_length_f);
 		for (var i = 0; i < this.canvas.width * 0.8 + 1; i++) {
 			this.ctx.beginPath();
 			this.ctx.strokeStyle = "#ddd"
@@ -67,7 +66,6 @@ var sm_spectrogram=(function(){
 			this.ctx.textAlign = "right";
 			if (i % parseInt(this.canvas.width * 0.8 / 10) === 0) {
 				var vtxt = parseInt(_start_f + i * _length_f / 800);
-				//console.log("drawHTick--",i,vtxt);
 				this.ctx.fillText(vtxt,
 					i + this.canvas.width * 0.1 + 5,
 					this.canvas.height * 0.9 + 15)
@@ -85,14 +83,23 @@ var sm_spectrogram=(function(){
             this.ctx.beginPath();
             this.ctx.strokeStyle = "#ddd";
             this.ctx.font = "14px Arial";
-                if (i % parseInt(this.canvas.height * 0.8 / 10) === 0 && i !== 0) {
-                    this.ctx.fillText(parseInt(i),
-                    this.canvas.width * 0.1 - 20,
-                    this.canvas.height * 0.9 - i +3)
-                    this.ctx.stroke()
-                }
-
+			if (i % parseInt(this.canvas.height * 0.8 / 10) === 0 && i !== 0) {
+				if(this.drawIndex > parseInt(this.canvas.height * 0.8)){
+					var a = this.drawIndex - (this.canvas.height * 0.8) + i;
+					this.ctx.fillText(parseInt(a),
+						this.canvas.width * 0.1 - 10,
+						this.canvas.height * 0.1 + i+3);
+				}else{
+					this.ctx.fillText(parseInt(i),
+						this.canvas.width * 0.1 - 10,
+						this.canvas.height * 0.1 + i+3)
+				}
+			}
         }
+		this.ctx.fillText("单位:s",
+			this.canvas.width * 0.1 - 10,
+			this.canvas.height * 0.1 + 9)
+		this.ctx.stroke()
     }
     _.prototype.drawRect=function(){
         this.ctx.fillStyle = '#000';
@@ -128,17 +135,11 @@ var sm_spectrogram=(function(){
         var dataInCoorSpace ;
         if (this.axis ==="Horizontal") {
             for (var i = 0; i < drawData.length; i++) {
-                
                 this.ctx.putImageData(drawData[i], this.canvas.width * 0.1 + this.drawIndex, this.canvas.height * 0.8 + i - 2);
-
             }
-
             if (this.drawIndex > parseInt(this.canvas.width * 0.9)) {
-
                 var img = this.ctx.getImageData(parseInt(this.canvas.width * 0.1), 0, parseInt(this.canvas.width * 0.9), parseInt(this.canvas.height * 0.9));
-
                 this.ctx.putImageData(img, parseInt(this.canvas.width * 0.1) - 2, 0);
-
             }
             this.drawIndex++;
         } else {
@@ -146,37 +147,32 @@ var sm_spectrogram=(function(){
             //重绘横向标尺 this.drawHTick()
             this.redraw();
             this.drawHTick();
-            
             if(drawData.length > (this.canvas.width * 0.8)){
-                
                 dataInCoorSpace = data.length / (this.canvas.width * 0.8);
                 for (var i = 0; i < this.canvas.width*0.8; i++) {
-                //   console.log(drawData.length);
                     // this.ctx.putImageData(drawData[i],this.drawIndex,i)
                     // this.ctx.putImageData(drawData[i],this.canvas.width * 0.1+this.drawIndex,this.canvas.height * 0.9-i-2);
                     this.ctx.putImageData(drawData[parseInt(i*dataInCoorSpace)], this.canvas.width * 0.1 + i, this.canvas.height*0.1+this.drawIndex>this.canvas.height*0.9?parseInt(this.canvas.height*0.9)-1:parseInt(this.canvas.height*0.1)+this.drawIndex);
-    
                 }
                 //通过像素的获取绘制要注意取到的值是整数,不然的话会导致像素偏移
-                if (this.drawIndex > parseInt(this.canvas.height * 0.9)) {
-                   
+                if (this.drawIndex > parseInt(this.canvas.height * 0.8)) {
                     var img = this.ctx.getImageData(parseInt(this.canvas.width * 0.1), parseInt(this.canvas.height*0.1), parseInt(this.canvas.width * 0.8), parseInt(this.canvas.height * 0.8));
                     this.ctx.putImageData(img, parseInt(this.canvas.width * 0.1), parseInt(this.canvas.height*0.1)-1);
                     this.allData.shift();
+					// 清除Y坐标数值，重新绘制数据
+					this.ctx.clearRect(45,0,45,700);
+					this.drawVTick();
                 }
                 this.drawIndex++;
             } else {
                 dataInCoorSpace = this.canvas.width * 0.8 / data.length;
                 for (var i = 0; i < this.canvas.width*0.8; i++) {
-                //   console.log(drawData.length);
                     // this.ctx.putImageData(drawData[i],this.drawIndex,i)
                     // this.ctx.putImageData(drawData[i],this.canvas.width * 0.1+this.drawIndex,this.canvas.height * 0.9-i-2);
                     this.ctx.putImageData(drawData[parseInt(i*dataInCoorSpace)], this.canvas.width * 0.1 + i, this.canvas.height*0.1+this.drawIndex>this.canvas.height*0.9?parseInt(this.canvas.height*0.9)-1:parseInt(this.canvas.height*0.1)+this.drawIndex);
-    
                 }
                 //通过像素的获取绘制要注意取到的值是整数,不然的话会导致像素偏移
                 if (this.drawIndex > parseInt(this.canvas.height * 0.9)) {
-                   
                     var img = this.ctx.getImageData(parseInt(this.canvas.width * 0.1), parseInt(this.canvas.height*0.1), parseInt(this.canvas.width * 0.8), parseInt(this.canvas.height * 0.8));
                     this.ctx.putImageData(img, parseInt(this.canvas.width * 0.1), parseInt(this.canvas.height*0.1)-1);
                     this.allData.shift();
@@ -219,7 +215,6 @@ var sm_spectrogram=(function(){
         })
         var hashMap = this.distinct(goDistinct);
 
-        // console.log(hashMap);
         var imageDataArray = [];
         let rgb = {}
         // let newImageData=imageData;
@@ -230,18 +225,15 @@ var sm_spectrogram=(function(){
             rgb = hashMap[value];
             (function (rgb, newImageData) {
                 // debugger;
-                // console.log(newImageData.data.length);
                 for (let j = 0; j < newImageData.data.length; j += 4) {
                     newImageData.data[j + 0] = rgb[0];
                     newImageData.data[j + 1] = rgb[1];
                     newImageData.data[j + 2] = rgb[2];
                     newImageData.data[j + 3] = 255;
                 }
-                //console.log(newImageData,"******************************")
                 imageDataArray.push(newImageData);
             })(rgb, newImageData)
         })
-       // console.log("imageDataArray", imageDataArray);
         return imageDataArray;
     }
     _.prototype.distinct = function (array) {
@@ -256,18 +248,14 @@ var sm_spectrogram=(function(){
         // 
         // var gradientArray = new gradientColor(this.changeColor[0],this.changeColor[1], hash.length);
         // var gradientArray = new gradientColor(this.changeColor[0], this.changeColor[1], hash.length);
-        // console.log(gradientArray);
         var gradientArray =  this.gradientColor(hash, hash.length);
         var hashMap = new Array();
-        // console.log(newArray);
         for (var j = 0; j < hash.length; j++) {
             hashMap[hash[j]] = gradientArray[j];
         }
 
-        // console.log(newArray);
         //将这个值的长度给颜色生成函数。
 
-        //console.log("hasMap", hashMap);
 
         return hashMap;
     }
@@ -294,9 +282,6 @@ var sm_spectrogram=(function(){
         var colorArr = [];
         for (var i = 0; i < step; i++) {
             //计算每一步的hex值 
-            // console.log(parseInt((sR * i + startR)))
-            // console.log(parseInt((sG * i + startG)))
-            // console.log(parseInt((sB * i + startB)))
             //返回每一个的rgb。
             var rgb = [];
             rgb.push(parseInt((Math.round(this.rgbData[0]*val) + 0)))
@@ -310,7 +295,6 @@ var sm_spectrogram=(function(){
 
             colorArr.push(rgb);
         }
-        console.log("colorArr", colorArr)
         return colorArr;
     }
 
@@ -339,13 +323,9 @@ var sm_spectrogram=(function(){
 
 
     _.prototype.gradientColor = function(data,len) {
-        // console.log(data,len);
         var colorArr = [];
         for (var i = 0; i < len; i++) {
             //计算每一步的hex值 
-            // console.log(parseInt((sR * i + startR)))
-            // console.log(parseInt((sG * i + startG)))
-            // console.log(parseInt((sB * i + startB)))
             //返回每一个的rgb。
             var val = data[i];
             var rgb = [0.0, 0.0, 0.0];
@@ -387,9 +367,7 @@ var sm_spectrogram=(function(){
             // var hex = this.colorHex('rgb('+ parseInt((sR * i + startR))+ ',' + parseInt((sG * i + startG))+ ',' + parseInt((sB * i + startB)) + ')');
 
             colorArr.push(rgb);
-            //console.log(rgb,'========================')
         }
-        //console.log("colorArr",colorArr);
         return colorArr;
     }
 
