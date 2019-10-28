@@ -61,10 +61,7 @@ var sm_spectrogram=(function(){
             gBlue = '0' + gBlue;
         }
         var fillStyleStr =  '#' + gRed + gGreen + gBlue + ''; 
-        // console.log("gRed: ",gRed,"gGreen: ",gGreen,"gBlue: ",gBlue, "fillStyleStr: ", fillStyleStr)      
         this.ctx.fillStyle = fillStyleStr;
-            
-        // console.log("this.ctx.fillStyle: ",this.ctx.fillStyle);
         this.ctx.fillRect(parseInt(this.canvas.width*0.9+3),parseInt(this.canvas.height*0.3),parseInt(this.canvas.width*0.02),15);
         //this.ctx.fill();
         this.ctx.save();
@@ -129,7 +126,7 @@ var sm_spectrogram=(function(){
         
         var canvasGW = parseInt(this.canvas.width*0.02);
         var spaning =  (canvasGH - 30)/8;          //线的跨度
-        console.log("spaning: " ,spaning);
+        //console.log("spaning: " ,spaning);
         // 画标线：两条标线的线的跨度 spaning，第一条标线的起始位置:this.canvas.height*0.3+spaning/3      
         for(var i=1; i<10; i++) {
             this.ctx.beginPath();
