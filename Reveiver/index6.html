@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <!-- 接收机 前端计算FFT-->
-<!-- 测试git -->
 <html lang="en">
 
 	<head>
@@ -141,7 +140,7 @@
 							</div>
 							<div style="margin-left: 32px;margin-top: 16px;">
 								<audio controls autoplay></audio>
-								
+
 							</div>
 
 						</div>
@@ -158,18 +157,18 @@
 						<li><a href="#pu" data-toggle="tab" style="height:80px;width: 200px;text-align:center;"> 瀑布图 </a></li>
 					</ul>
 				</div>
-				<div style="position: absolute;top:750px;float:left;margin-left: 80px;z-index: 10;font-size:20px;min-width: 570px;">
-					<div style="margin-left: 40px;margin-top: 10px;display:inline;">中心频点:</div>
+				<div style="position: fixed;top:750px;float:left;margin-left: 20px;z-index: 10;font-size:20px;">
+					<div style="margin-left: 30px;margin-top: 10px;display:inline;">中心频点:</div>
 					<input id="input_center" type="number" class="form-control" value="0" style="margin-left: 5px;width:120px;height:45px;line-height:40px ;font-size:20px;marginTop:4px;display:inline;">
 					<div style="margin-left: 2px;margin-top: 10px;display:inline;">kHz</div>
 
-					<div style="margin-left: 40px;margin-top: 10px;display:inline;">扫宽:</div>
+					<div style="margin-left: 30px;margin-top: 10px;display:inline;">扫宽:</div>
 					<input id="input_span" type="number" class="form-control" value="18.75" style="margin-left: 5px;width:120px;height:45px;line-height:40px ;font-size:20px;marginTop:4px;display:inline;">
 					<div style="margin-left: 2px;margin-top: 10px;display:inline;">kHz</div>
 
-					<!-- <div style="margin-left: 40px;margin-top: 10px;display:inline;">参考幅值:</div>
-					<input id="input_level" type="number" class="form-control" value="70" style="margin-left: 5px;width:120px;height:45px;line-height:40px ;font-size:20px;marginTop:4px;display:inline;">
-					<div style="margin-left: 2px;margin-top: 10px;display:inline;">dB</div> -->
+					<div style="margin-left: 30px;margin-top: 10px;display:inline;">参考幅值:</div>
+					<input id="input_level" type="number" class="form-control" value="" style="margin-left: 5px;width:120px;height:45px;line-height:40px ;font-size:20px;marginTop:4px;display:inline;">
+					<div style="margin-left: 2px;margin-top: 10px;display:inline;">dB</div>
 				</div>
 				<div id="myTabContent" class="tab-content" style="position: relative;top: -75px;z-index: -1;">
 					<div class="tab-pane fade  in active" id="bo">
@@ -180,7 +179,7 @@
 								<h4>波形图</h4>
 							</div>
 
-							<div id="sin_curve" style="width: 1000px;height:800px;margin-left: -40px;"></div>
+							<div id="sin_curve" style="width: 1000px;height:800px;margin-left: -30px;"></div>
 						</div>
 					</div>
 					<div class="tab-pane fade " id="pin">
@@ -189,7 +188,7 @@
 							<div style="text-align:center;width: 700px;display: none;">
 								<h4>频谱图<a id="freq_point" style="margin-left:20px"></a></h4>
 							</div>
-							<div id="sm_pin" style="width: 1000px;height:800px;margin-left: -40px;"></div>
+							<div id="sm_pin" style="width: 1000px;height:800px;margin-left: -30px;"></div>
 						</div>
 					</div>
 					<div class="tab-pane fade " id="yu">
@@ -277,7 +276,7 @@
 				//console.log("dealData--", data)
 				var center = $("#input_center").val();
 				var span = $("#input_span").val();
-				var level = $("#input_level").val();
+				
 				//console.log("center-span--", center, span);
 				if (center != "" && span != "") {
 					//console.log("dealData============")
@@ -367,11 +366,13 @@
 					checkInput.id = "toggle-"+i;
 					checkInput.className = "my-radiobox";
 					checkInput.style.outline = "none";
+					checkInput.class = "toggle";
+					checkInput.value = "2";
 					checkInput.style.width = "100px";
 					checkInput.style.height = "40px";
 					checkInput.style.marginLeft = "-20px";
 					checkInput.style.verticalAlign = "middle";
-					checkInput.style.checked = "background-color","red";
+					checkInput.style.checked = "background-color", "#00A1E9";
 					var span = document.createElement('span');
 					span.innerText = "2";
 					var button = document.createElement('button');
@@ -573,7 +574,7 @@
 					}
 				});
 			})
-			
+
 			$('#con input[type=text]').on('blur', function() {
 				var _index = $(this).parent().parent().find('div').eq(0).text() - 1;
 				var data = sourceData[_index];
@@ -619,9 +620,9 @@
 					}
 				})
 			});
-			
+
 			// bind("propertychange input"
-			
+
 			$('#con input[type=radio]').change(function() {
 				//获取radio所在行的输入框内容,进行发送
 				var _index = $(this).parent().parent().find('div').eq(0).text() - 1;
@@ -634,8 +635,8 @@
 					$("#inp-"+i).attr("disabled","disabled");
 				}
 				$("#inp-"+radioSub).removeAttr("disabled");
-				
-				
+
+
 				var data = sourceData[_index];
 				if (textValue != "") {
 					data.frequency = textValue;
