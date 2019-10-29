@@ -40,10 +40,10 @@ var sm_spectrogram=(function(){
         
         var canvasGH = parseInt(this.canvas.height*0.6);
         var canvasGW = parseInt(this.canvas.width*0.02);
-        var drawG = (parseInt(this.canvas.height*0.6)-30)/240;
+        var drawG = (parseInt(this.canvas.height*0.6)-30)/180;
 
         var data = [];
-        for(var i=-160; i<81; i++) {
+        for(var i=-150; i<31; i++) {
             data.push(i);
         }
         var gradient = this.gradientColor(data,data.length);
@@ -69,7 +69,7 @@ var sm_spectrogram=(function(){
        
        // debugger
         
-        for(var i=0; i < 241 ; i++){
+        for(var i=0; i < 181 ; i++){
             this.ctx.beginPath();
             var gr = gradient[i]; 
             var gRed = gr[0].toString(16);
@@ -96,7 +96,7 @@ var sm_spectrogram=(function(){
             this.ctx.stroke();
         } 
         
-        gr = gradient[240]; 
+        gr = gradient[180]; 
         gRed = gr[0].toString(16);
         if(gRed.length < 2) {
             gRed = '0' + gRed;
@@ -114,7 +114,7 @@ var sm_spectrogram=(function(){
         this.ctx.fillStyle = fillStyleStr;
             
         // console.log("this.ctx.fillStyle: ",this.ctx.fillStyle);
-        this.ctx.fillRect(parseInt(this.canvas.width*0.9+3),parseInt(this.canvas.height*0.3)+drawG*241+15,parseInt(this.canvas.width*0.02),15);
+        this.ctx.fillRect(parseInt(this.canvas.width*0.9+3),parseInt(this.canvas.height*0.3)+drawG*181+15,parseInt(this.canvas.width*0.02),15);
         //this.ctx.fill();
         this.ctx.save();
         this.ctx.stroke();
@@ -123,21 +123,21 @@ var sm_spectrogram=(function(){
         var canvasGH = parseInt(this.canvas.height*0.6);
         
         var canvasGW = parseInt(this.canvas.width*0.02);
-        var spaning =  (canvasGH - 30)/8;          //线的跨度
+        var spaning =  (canvasGH - 30)/9;          //线的跨度
         //console.log("spaning: " ,spaning);
         // 画标线：两条标线的线的跨度 spaning，第一条标线的起始位置:this.canvas.height*0.3+spaning/3      
-        for(var i=1; i<10; i++) {
+        for(var i=1; i<11; i++) {
             this.ctx.beginPath();
             this.ctx.strokeStyle = "#ffffff";
             this.ctx.lineWidth = 0.8;
             //if ((i % 10) === 0)  {
-            this.ctx.moveTo(parseInt(this.canvas.width*0.9+3), parseInt(this.canvas.height*0.3+15) + spaning*(i-1));  //超出-150--80 画15高度
-            this.ctx.lineTo(parseInt(this.canvas.width*0.9+3) + canvasGW, parseInt(this.canvas.height*0.3+15) + spaning*(i-1));  // 超出-150--80 画15高度
+            this.ctx.moveTo(parseInt(this.canvas.width*0.9+3), parseInt(this.canvas.height*0.3+15) + spaning*(i-1));  //超出-150--30 画15高度
+            this.ctx.lineTo(parseInt(this.canvas.width*0.9+3) + canvasGW, parseInt(this.canvas.height*0.3+15) + spaning*(i-1));  // 超出-150--30 画15高度
             //this.ctx.stroke();
 
             this.ctx.strokeStyle = "#ffffff";
             this.ctx.textAlign = "left";
-            var val = (i-1) * 30 - 160;
+            var val = (i-1) * 20 - 150;
             this.ctx.fillText(val.toString(),
             parseInt(this.canvas.width*0.9+3) + canvasGW,     // X轴的位置
             parseInt(this.canvas.height*0.3+15) + spaning*(i-1) + 5);   // Y轴的位置
@@ -467,13 +467,13 @@ var sm_spectrogram=(function(){
             var val = data[i];
             var rgb = [0.0, 0.0, 0.0];
            
-            if(val < -160) {
-                val = -160;
-            } else if(val > 80) {
-                val = 80;
+            if(val < -150) {
+                val = -150;
+            } else if(val > 30) {
+                val = 30;
             }
 
-            val = (val+160)/240;
+            val = (val+150)/180;
             if(val < 0.125){
                 rgb[2] = parseInt(256 * (0.5+ (val * 4)))
             }else if(val < 0.375){
