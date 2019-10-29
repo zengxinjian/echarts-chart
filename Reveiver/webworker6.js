@@ -8,7 +8,7 @@ this.onmessage = function(event) {
 	var that = this;
 	var pcmArray = [];
 	var signal = [];
-	var pcmsocket = new WebSocket(ip); //"ws://" + id3 + ":7880" "ws://"+id+":7880"  "ws://127.0.0.1:4649/Echo?name=pengbo"  
+	var pcmsocket = new WebSocket(ip3); //"ws://" + id3 + ":7880" "ws://"+id+":7880"  "ws://127.0.0.1:4649/Echo?name=pengbo"  
 	// "ws://" + location.hostname + ":" + location.port
 	//前端加速库
 	var fftasm = new FftModule(16384, true);

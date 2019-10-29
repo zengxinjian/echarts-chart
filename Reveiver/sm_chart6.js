@@ -11,7 +11,6 @@ var sm_chart = (function() {
 		this.init()
 	}
 	_.prototype.init = function() {
-		console.log("init--");
 		var canvas = document.createElement('canvas');
 		var doc = document.getElementById(this.id);
 		this.canvas = doc.appendChild(canvas);
@@ -33,6 +32,7 @@ var sm_chart = (function() {
 		this.mouseDrop(); //鼠标按下并且放开时的操作，对与标记符号
 	}
 
+	// 横坐标时间单位
 	_.prototype.drawHTick = function() {
 		for (var i = 0; i < this.canvas.width * 0.8 + 1; i++) {
 			this.ctx.beginPath();
@@ -42,11 +42,10 @@ var sm_chart = (function() {
 			this.ctx.textAlign = "right";
 			if (i % parseInt(this.canvas.width * 0.8 / 10) === 0) {
 				this.ctx.fillText(parseInt(i),
-					i + this.canvas.width * 0.1 + 5,
-					this.canvas.height * 0.9 + 15)
+				i + this.canvas.width * 0.1 + 5,
+				this.canvas.height * 0.9 + 15)
 				this.ctx.stroke() //图形绘制
 			}
-
 		}
 		this.ctx.fillText("单位:s",
 			this.canvas.width * 0.8 + 120,
@@ -54,7 +53,6 @@ var sm_chart = (function() {
 		this.ctx.stroke()
 	}
 	_.prototype.drawVTick = function() {
-		// console.log("height--" + this.canvas.height * 0.8);
 		this.ctx.beginPath();
 		this.ctx.strokeStyle = "#ddd";
 		this.ctx.font = "14px Arial";
@@ -63,31 +61,23 @@ var sm_chart = (function() {
 			if (i % parseInt(this.canvas.height * 0.8 / 10) === 0 && i !== 0 || i === 0) {
 				var aa;
 				var myheigth = this.canvas.height * 0.8;
-				// console.log("myheigth--", myheigth);
 				if (this.zlc == 1000) { //初始化时纵向量程为1000
-					console.log("this.zlc--", this.zlc);
 					aa = Math.round((i - myheigth / 2) * (this.zlc / (myheigth / 2))); //5.5472为limit = max / myCanvasHeigth 
 				} else { //有数据输入时，纵向量程不为1000
 					aa = Math.round((i - myheigth / 2) * (this.zlc / (myheigth / 2))); //四舍五入取整，包含负整数 
 				}
-				// console.log(i, "-aa-1---", aa);
-				// console.log("aa-2---", parseInt(aa));
 				var vtxt;
 				vtxt = Math.round(aa);
 				this.ctx.fillText(vtxt,
 					this.canvas.width * 0.1 - 10,
 					this.canvas.height * 0.9 - i + 6)
-				// console.log("drawVTick----", parseInt(i), vtxt);
 				this.ctx.stroke()
 			}
 		}
-
-
 		//        this.ctx.fillText("单位",
 		//        this.canvas.width * 0.1 - 10,
 		//        this.canvas.height * 0.9 - i -20)
 		//        this.ctx.stroke()
-
 	}
 	_.prototype.drawRect = function() {
 		this.ctx.fillStyle = '#000';
@@ -125,15 +115,12 @@ var sm_chart = (function() {
 		this.ctx.fillStyle = 'rgb(0,0,0,0.09)';
 		this.ctx.fillRect(0, 0, this.canvas.width * 0.2, this.canvas.height * 0.1);
 		// this.ctx.fillText(,5,5)
-		// console.log(this.markerList.length);
 		if (this.markerList.length > 0) {
 			this.ctx.fillStyle = 'rgb(0,0,0,0.09)';
-			// console.log(this.canvas.width * 0.8)
 			this.ctx.fillRect(this.canvas.width * 0.8, 0, this.canvas.width, this.canvas.height * 0.1)
 		}
 	}
 	_.prototype.drawTickDelta = function(hz) {
-		// console.log(hz);
 		var index = this.data.indexOf(hz);
 		this.ctx.fillStyle = '#000';
 		this.ctx.fillText('MR:' + hz + 'dBm', 5, 20)
@@ -168,8 +155,6 @@ var sm_chart = (function() {
 
 	//绘制数据
 	_.prototype.drawData = function(data) {
-		//console.log("drawData---");
-		// console.log(data);
 		this.data = data;
 		var max = Math.max.apply(null, data); //获取数组最大、最小值
 		var min = Math.min.apply(null, data);
@@ -179,43 +164,28 @@ var sm_chart = (function() {
 
 
 		this.redraw();
-		// console.log("bo--max--", max);
-		// console.log("bo--min--", min);
 		var ma = Math.abs(max); //取绝对值
 		var mi = Math.abs(min);
-		// console.log("bo--ma--", ma);
-		// console.log("bo--mi--", mi);
 		if (ma >= mi)
 			this.zlc = ma;
 		else
 			this.zlc = mi;
-		// console.log("bo--this.zlc--", this.zlc);
 		if (this.zlc > 10) {
 			this.zlc = parseInt(this.zlc * 1.1/10)*10;
-			// console.log("bo--add-10%-this.zlc--", this.zlc);
 		}
 		var limit = this.zlc / myCanvasHeigth;
-		// console.log("bo--limit--" + limit); //缩放比例
 		//重绘横向标尺 this.drawHTick()
 		this.drawHTick();
 		//重绘纵向标尺 this.drawVTick()
 		this.drawVTick();
-		//console.log("data.length--" + data.length);
-		//console.log("canvas.width--");
-		//console.log(this.canvas.width * 0.8);
 		if (data.length > (this.canvas.width * 0.8)) {
-			//console.log("data.length >>>>")
 			this.dataInCoorSpace = data.length / this.canvas.width * 0.8;
 
-			//console.log("dataInCoorSpace--" + this.dataInCoorSpace);
 			this.ctx.beginPath();
 			this.ctx.strokeStyle = '#00FF00'; //#FF0000
 			for (var i = 0; i < this.canvas.width * 0.8; i++) {
 				if (i < 10) {
-					//console.log("x-y");
-					console.log(this.canvas.width * 0.1 + i + 0.5);
 					var y = this.canvas.height * 0.8 / 2 - data[parseInt(i * this.dataInCoorSpace)] / (2 * limit);
-					console.log(y);
 				}
 				this.ctx.lineTo(this.canvas.width * 0.1 + i + 0.5, this.canvas.height * 0.8 / 2 - data[parseInt(i *
 					this.dataInCoorSpace)] / (2 * limit));
@@ -227,19 +197,14 @@ var sm_chart = (function() {
 			}
 			//this.ctx.stroke();
 		} else {
-			// console.log("data.length <<<<<==")
 
 			this.dataInCoorSpace = this.canvas.width * 0.8 / data.length;
 			this.ctx.beginPath();
 			this.ctx.strokeStyle = '#00FF00'; //#FF0000
 
-			//console.log("dataInCoorSpace--" + this.dataInCoorSpace);
 			for (var i = 0; i < data.length; i++) {
 				if (i < 10) {
-					//console.log("x-y");
-					// console.log(this.canvas.width * 0.1 + i * this.dataInCoorSpace + 0.5);
 					var yy = this.canvas.height / 2 - data[i] / (limit * 2) + 0.5;
-					// console.log(yy);
 				}
 
 				this.ctx.lineTo(this.canvas.width * 0.1 + i * this.dataInCoorSpace + 0.5, this.canvas.height / 2 - data[i] / (
@@ -292,7 +257,6 @@ var sm_chart = (function() {
 		var index = this.data.indexOf(max);
 		this.markerList[0].x = this.canvas.width * 0.1 + index + 0.5;
 		this.markerList[0].y = this.canvas.height / 2 - this.data[parseInt(index)] / 2 - 5;
-		// console.log(this.markerList);
 	}
 
 	//添加鼠标移动事件
@@ -310,11 +274,9 @@ var sm_chart = (function() {
 			}
 			// that.markerList[0].x=x;
 			// that.markerList[0].y=y;
-			//    console.log(x,y);
 			for (var i = 0; i < that.markerList.length; i++) {
 				(function(a) {
 					if (parseInt(that.markerList[a].x) === x && parseInt(that.markerList.y) === y) {
-						// console.log("aaaaaaaa")
 					}
 				})(i)
 			}
@@ -332,13 +294,10 @@ var sm_chart = (function() {
 				x = ev.offsetX;
 				y = ev.offsetY;
 			}
-			// console.log(x, y);
 			for (var i = 0; i < that.markerList.length; i++) {
 				(function(a) {
-					// console.log(that.markerList[a]);
 					if (x < (that.markerList[a].x + 10) && x > (that.markerList[a].x - 10)) {
 						if (y < (that.markerList[a].y + 10) && y > (that.markerList[a].y - 10)) {
-							// console.log(that.markerList[a]);
 							that.markerList[a].showlight = true;
 							// that.showLight(that.markerList[a]);
 						}
@@ -359,7 +318,6 @@ var sm_chart = (function() {
 				x = ev.offsetX;
 				y = ev.offsetY;
 			}
-			// console.log(x, y);
 			that.canvas.addEventListener('mouseup', function(ev) {
 				var x, y;
 				if (ev.layerX || ev.layerX == 0) {
@@ -383,7 +341,6 @@ var sm_chart = (function() {
 		}, false)
 	}
 	_.prototype.showLight = function(obj) {
-		// console.log(obj);
 		this.ctx.fillText('<_>', obj.x, obj.y - 10)
 	}
 
