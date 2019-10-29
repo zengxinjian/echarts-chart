@@ -465,7 +465,7 @@
 					sourceData = json;
 
 					if (null != json) {
-						$("#con input[type=text]").each(function(i) {
+						$("#con input[id^='inp']").each(function(i) {
 							$(this).val(json[i].frequency);
 						})
 						$('#con input[type=checkbox]').each(function(i) {

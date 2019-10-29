@@ -200,25 +200,27 @@ var sm_spectrogram=(function(){
 		this.ctx.stroke()
     }
     _.prototype.drawVTick=function(){
-        for (var i = 0; i < this.canvas.height * 0.8; i++) {
+        var oldHeight = this.canvas.height * 0.8;
+        for (var i = 0; i <= parseInt(oldHeight); i++) {
             this.ctx.beginPath();
             this.ctx.strokeStyle = "#ddd";
             this.ctx.font = "14px Arial";
-			if (i % parseInt(this.canvas.height * 0.8 / 10) === 0 && i !== 0) {
-				if(this.drawIndex > parseInt(this.canvas.height * 0.8)){
-					var a = this.drawIndex - (this.canvas.height * 0.8) + i;
+			if (i % parseInt(oldHeight / 10) === 0 && i !== 0) {
+				if(this.drawIndex > parseInt(oldHeight)){
+					var a = this.drawIndex - parseInt(oldHeight) + i;
 					this.ctx.fillText(parseInt(a),
-						this.canvas.width * 0.1 - 10,
-						this.canvas.height * 0.1 + i+3);
+						this.canvas.width * 0.1 - 5,
+						this.canvas.height * 0.1 + i+ (i===parseInt(oldHeight)?0:5));
 				}else{
-					this.ctx.fillText(parseInt(i),
-						this.canvas.width * 0.1 - 10,
-						this.canvas.height * 0.1 + i+3)
-				}
+                    this.ctx.fillText(parseInt(i),
+                        this.canvas.width * 0.1 - 5,
+                        this.canvas.height * 0.1 + i+ (i===parseInt(oldHeight)?0:5))
+                }
+                
 			}
         }
 		this.ctx.fillText("单位:s",
-			this.canvas.width * 0.1 - 10,
+			this.canvas.width * 0.1 - 5,
 			this.canvas.height * 0.1 + 9)
 		this.ctx.stroke()
     }
@@ -281,7 +283,7 @@ var sm_spectrogram=(function(){
                     this.ctx.putImageData(img, parseInt(this.canvas.width * 0.1), parseInt(this.canvas.height*0.1)-1);
                     this.allData.shift();
 					// 清除Y坐标数值，重新绘制数据
-					this.ctx.clearRect(45,0,45,700);
+					this.ctx.clearRect(50,0,45,this.canvas.height*0.9);
 					this.drawVTick();
                 }
                 this.drawIndex++;
