@@ -6,13 +6,14 @@ var sm_pin = (function() {
 		this.data = [];
 		this.type = this.option.type;
 		this.markerList = [];
+		this.lineColor = "#00FF00";
 		this.dataInCoorSpace = null;
 		this.zlc = 1000; //纵向量程，最大和最小数中的绝对值大的
 		this.level;
+		this.lineVTick = [];	//纵向所有值
+		this.lineHTick = [];	//横向所有值
 		this.noNum = -1000000;//未输入数据时的默认值
-		this.init()
-	}
-	_.prototype.init = function() {
+		
 		//console.log("init--FFT");
 		this.level = this.noNum;
 		var canvas = document.createElement('canvas');
@@ -25,14 +26,17 @@ var sm_pin = (function() {
 		this.canvas.style.height = doc.style.height;
 		// this.canvas.style.border='1px solid #000';
 		// this.canvas.style.backgroundColor='#000';
+		this.init()
+	}
+	_.prototype.init = function() {
 		this.drawRect(); //矩形黑底背景
 		this.drawGH(); //纵向网格
 		this.drawGV(); //横向网格
 		this.drawHTick(); //横坐标 标尺
 		this.drawVTick(); //纵坐标 标尺
-		this.mousemove(); //鼠标移动
+		// this.mousemove(); //鼠标移动
 		//this.drawTickRect(); //此方法会在左上角增加灰色块，本用于实现纵坐标滑块、单位，暂时注释掉
-		this.mousePeak(); //
+		// this.mousePeak(); //
 		this.mouseDrop(); //鼠标按下并且放开时的操作，对与标记符号
 	}
 
@@ -54,12 +58,14 @@ var sm_pin = (function() {
 			this.ctx.textAlign = "right";
 			if (i % parseInt(this.canvas.width * 0.8 / 10) === 0) {
 				var vtxt = parseInt(_start_f + i * _length_f / 800);
+				this.lineHTick.push(vtxt);
 				this.ctx.fillText(vtxt,
 					i + this.canvas.width * 0.1 + 5,
 					this.canvas.height * 0.9 + 15)
 				this.ctx.stroke() //图形绘制
 			}
 		}
+
 		this.ctx.fillText("单位:Hz",
 			this.canvas.width * 0.8 + 120,
 			this.canvas.height * 0.9 + 25)
@@ -70,50 +76,42 @@ var sm_pin = (function() {
 		this.ctx.strokeStyle = "#ddd";
 		this.ctx.font = "14px Arial";
 		this.ctx.textAlign = "right";
+		this.lineVTick = [];
 		var myheigth = this.canvas.height * 0.8;
 		//console.log("myheigth--", myheigth);
 		if (this.level != this.noNum) {
 			var li = this.canvas.height * 0.8 / 100; //100为最大值
 			for (var i = 0; i < this.canvas.height * 0.8 + 1; i++) {
-				if (i % parseInt(this.canvas.height * 0.8 / 10) === 0 && i !== 0) {
+				if (i % parseInt(this.canvas.height * 0.8 / 10) === 0) {
 					var aa = Math.round((i - myheigth) * (this.zlc / myheigth)) + this.level; //四舍五入取整，包含负整数 
-					//console.log(i, "-aa-1---", aa);
 					//aa = parseInt(aa*10/10);
-					//console.log(i, "-aa-2---", aa);
-					//console.log("aa-2---", parseInt(aa));
-
-					this.ctx.fillText(aa,
+					this.lineVTick.push(aa);
+					this.ctx.fillText(parseFloat(aa.toFixed(2)),
 						this.canvas.width * 0.1 - 10,
-						this.canvas.height * 0.9 - i + 6);
-					//console.log("pin-drawVTick----", parseInt(i), vtxt);
+						this.canvas.height * 0.9 - i + (i !== 0 ? 6 : 0));
 					this.ctx.stroke()
 				}
 			}
 		} else {
 			var li = this.canvas.height * 0.8 / 100; //100为最大值
 			for (var i = 0; i < this.canvas.height * 0.8 + 1; i++) {
-				if (i % parseInt(this.canvas.height * 0.8 / 10) === 0 && i !== 0) {
+				if (i % parseInt(this.canvas.height * 0.8 / 10) === 0) {
 
 					var aa;
 					var myheigth = this.canvas.height * 0.8;
-					//console.log("myheigth--", myheigth);
 					if (this.zlc == 1000) { //初始化时纵向量程为1000
-						//console.log("this.zlc--", this.zlc);
 						aa = Math.round((i - myheigth / 2) * (this.zlc / (myheigth / 2))); //5.5472为limit = max / myCanvasHeigth 
 					} else { //有数据输入时，纵向量程不为1000
 						aa = Math.round((i - myheigth / 2) * (this.zlc / (myheigth / 2))); //四舍五入取整，包含负整数 
 					}
-					//console.log(i, "-aa-1---", aa);
-					//console.log("aa-2---", parseInt(aa));
 					var vtxt;
 					vtxt = Math.round(aa);
-					this.ctx.fillText(vtxt,
+					this.lineVTick.push(vtxt);
+					this.ctx.fillText(parseFloat(vtxt.toFixed(2)),
 						this.canvas.width * 0.1 - 10,
-						this.canvas.height * 0.9 - i + 6)
-					//console.log("pin-drawVTick----", parseInt(i), vtxt);
+						this.canvas.height * 0.9 - i + (i !== 0 ? 6 : 0))
 					this.ctx.stroke()
 				}
-
 			}
 		}
 
@@ -249,20 +247,15 @@ var sm_pin = (function() {
 		if (this.level != this.noNum) {
 			if (mi > 10) {
 				this.zlc = this.level + parseInt(mi * 1.1 / 10) * 10;
-				//console.log("pin--add-10%-this.zlc--", this.zlc);
 			} else
 				this.zlc = this.level + mi;
-
-			//console.log("pin--this.zlc--", this.zlc);
 		} else { //为空时是自动幅值模式
 			if (ma >= mi)
 				this.zlc = ma;
 			else
 				this.zlc = mi;
-			//console.log("pin--this.zlc--", this.zlc);
 			if (this.zlc > 10) {
 				this.zlc = parseInt(this.zlc * 1.1 / 10) * 10;
-				//console.log("pin--add-10%-this.zlc--", this.zlc);
 			}
 		}
 		var limit = this.zlc / myCanvasHeigth;
@@ -274,27 +267,16 @@ var sm_pin = (function() {
 		if (data.length > (this.canvas.width * 0.8)) { //data.length > (this.canvas.width * 0.8)
 			this.dataInCoorSpace = data.length / (this.canvas.width * 0.8);
 			this.ctx.beginPath();
-			this.ctx.strokeStyle = '#00FF00'; //#FF0000
-			//console.log("this.canvas.width-", this.canvas.width, this.canvas.width * 0.8)
-			//console.log("this.canvas.height-", this.canvas.height, this.canvas.height * 0.8)
-
+			this.ctx.strokeStyle = this.lineColor; //#FF0000
+			
 			/* var a = myCanvasWidth / 2 - 10;
 			var b = myCanvasWidth / 2 + 10;
-			var p = center_point - myCanvasWidth / 2;
-			console.log("a-b-", a, b, p); */
-
-
-			//console.log("this.dataInCoorSpace--", this.dataInCoorSpace);
+			var p = center_point - myCanvasWidth / 2;*/
 			if (this.level != this.noNum) {
 				/* var aaaa1 = 0;
-				console.log(aaaa1, "--bbbb--", this.canvas.height * 0.1 + (this.level - aaaa1) / limit);
-				console.log("height * 0.1--", this.canvas.height * 0.1);
-				var aaaa2 = -100;
-				console.log(aaaa2, "--bbbb--", this.canvas.height * 0.1 + (this.level - aaaa2) / limit);
-				console.log("height * 0.9--", this.canvas.height * 0.9); */
+				var aaaa2 = -100;*/
 				for (var i = 0; i < this.canvas.width * 0.8; i++) {
 					if (max == 0 && min == this.noNum) {
-						//console.log("max == min == 0"); //全0的数据为中间一条线
 						this.ctx.lineTo(this.canvas.width * 0.1 + i + 0.5, this.canvas.height * 0.1 + (this.level - 0) / limit);
 					} else {
 						var aa = data[parseInt(i * this.dataInCoorSpace)];
@@ -312,7 +294,6 @@ var sm_pin = (function() {
 			} else {
 				for (var i = 0; i < this.canvas.width * 0.8; i++) {
 					if (max == 0 && min == this.noNum) {
-						//console.log("max == min == 0"); //全0的数据为中间一条线
 						this.ctx.lineTo(this.canvas.width * 0.1 + i + 0.5, this.canvas.height / 2);
 					} else {
 						this.ctx.lineTo(this.canvas.width * 0.1 + i + 0.5, this.canvas.height / 2 - data[parseInt(i * this.dataInCoorSpace)] /
@@ -324,7 +305,7 @@ var sm_pin = (function() {
 		} else {
 			this.dataInCoorSpace = this.canvas.width * 0.8 / data.length;
 			this.ctx.beginPath();
-			this.ctx.strokeStyle = '#00FF00'; //#FF0000
+			this.ctx.strokeStyle = this.lineColor; //#FF0000
 
 			for (var i = 0; i < data.length; i++) {
 				/* if (i < 10) {
@@ -339,7 +320,7 @@ var sm_pin = (function() {
 
 			/* this.dataInCoorSpace = this.canvas.width * 0.8 / data.length;
 			this.ctx.beginPath();
-			this.ctx.strokeStyle = '#00FF00'; //#FF0000
+			this.ctx.strokeStyle = this.lineColor; //#FF0000
 
 			var lim = myCanvasHeigth / 100;
 			for (var i = 0; i < data.length; i++) {
@@ -386,6 +367,209 @@ var sm_pin = (function() {
 		this.ctx.stroke();
 
 	}
+
+
+	//鼠标按下并且放开时的操作，对与标记符号。
+	_.prototype.mouseDrop = function() {
+		let that = this
+		let clickRightMenu = document.getElementById("clickRightMenu")
+		let colorMenus = document.getElementById("colorMenus")
+		let clickReset = document.getElementById("cvs_reset")
+		let clickCancel = document.getElementById("cvs_cancel")
+		let mousedown = {},
+				rubberbandRect = {},
+				dragging = false,
+				drawingSurfaceImageData
+
+		function mathApply(list = [0], type = "min"){
+			return type==="min" ? Math.min.apply(null, list) : Math.max.apply(null, list);
+		}
+
+		//数据绘制图像
+		function drawlLine(){
+			const _span = $("#input_span").val()
+			const {startX,startY,endX,endY} = mousedown
+			const [newStartX,newStartY,newEndX,newEndY] = [(startX-100),(startY-80),(endX-100),(endY-80)]
+			// console.log("新的XY轴",newStartX,newStartY,newEndX,newEndY)
+			// debugger
+			//纵坐标
+			const minVTick = mathApply(that.lineVTick, "min")
+			const maxVTick = mathApply(that.lineVTick, "max")
+			const countVabs = Math.abs(minVTick - maxVTick)
+			//横坐标
+			const minHTick = mathApply(that.lineHTick, "min") / 1000
+			const maxHTick = mathApply(that.lineHTick, "max") / 1000
+			//Res X,Y轴点
+			const res_x = _span / (that.canvas.width * 0.8)
+			const res_y = countVabs / (that.canvas.height * 0.8)
+			//中心频点
+			const centerX = (newStartX+newEndX) / 2
+			const centerY = (newStartY+newEndY) / 2
+			const xPin = minHTick + centerX * res_x
+			const yPin = maxVTick - centerY * res_y
+			//扫宽
+			const xSpan = Math.abs(newStartX - newEndX) * res_x
+			const ySpan = Math.abs(newStartY - newEndY) * res_y
+
+			// console.log("线起始XY点：",newStartX,newStartY,"线结束XY点：",newEndX,newEndY,"width像素点",(that.canvas.width * 0.8),
+			// "height像素点",(that.canvas.height * 0.8))
+			// console.log("X轴最小值：",minHTick,"X轴最大值：",maxHTick,"纵坐标总和：",countVabs)
+			// console.log("Res X,Y轴值：",res_x,res_y)
+			// console.log("中心频点 X,Y值：",xPin,yPin)
+			// console.log("扫宽 X,Y值：",xSpan,ySpan)
+			$("#input_span").val(xSpan.toFixed(2))
+			$("#input_level").val(ySpan.toFixed(2))
+			$("#input_center").val(xPin.toFixed(2))
+		}
+		
+		/**
+     * 坐标转化为canvas坐标
+     * @param x
+     * @param y
+     */
+    function windowToCanvas(x, y) {
+			//返回元素的大小以及位置
+			var bbox = that.canvas.getBoundingClientRect();
+			return {x: x - bbox.left * (that.canvas.width / bbox.width), y: y - bbox.top * (that.canvas.height / bbox.height)};
+		}
+		//保存和恢复绘图面板
+    function saveDrawingSurface() {
+			drawingSurfaceImageData = that.ctx.getImageData(0, 0, that.canvas.width, that.canvas.height);
+		}
+		function restoreDrawingSurface() {
+				that.ctx.putImageData(drawingSurfaceImageData, 0, 0);
+		}
+		/**
+     * 画辅助线，并设置属性
+     */
+    function drawGuidewires(x, y) {
+			that.ctx.save();
+			that.ctx.strokeStyle = 'rgba(0,255,0,0.4)';
+			that.ctx.lineWidth = 1;
+			drawVerticalLine(x);
+			drawHorizontalLine(y);
+			that.ctx.restore();
+		}
+		/**
+     * 画水平辅助线，占整个宽canvas度
+     */
+    function drawHorizontalLine(y) {
+			that.ctx.beginPath();
+			that.ctx.moveTo(100, y + 0.5);
+			that.ctx.lineTo((that.canvas.width*0.9), y + 0.5);
+			that.ctx.stroke();
+		}
+		/**
+		 * 画垂直辅助线，占整个canvas高度
+		 */
+		function drawVerticalLine(x) {
+				that.ctx.beginPath();
+				that.ctx.moveTo(x + 0.5, 80);
+				that.ctx.lineTo(x + 0.5, (that.canvas.height*0.9));
+				that.ctx.stroke();
+		}
+		/**
+     * 更新矩形
+     */
+    function updateRubberband(loc) {
+        rubberbandRect.width = Math.abs(loc.x - mousedown.startX);
+        rubberbandRect.height = Math.abs(loc.y - mousedown.startY);
+        //从左往右拉，和从右往左拉的两种情况。主要是判断左边的位置
+        //因为从左往右拉的时候，左边x坐标不变
+				//从右往左拉的时候，左边线的x坐标需要跟着鼠标移动
+        if (loc.x > mousedown.startX) {
+					rubberbandRect.left = mousedown.startX;
+				} else {
+					rubberbandRect.left = loc.x;
+				}
+        if (loc.y > mousedown.startY) {
+					rubberbandRect.top = mousedown.startY;
+				} else {
+					rubberbandRect.top = loc.y;
+				}
+				that.ctx.save();
+				that.ctx.beginPath();
+				that.ctx.lineWidth = 2;
+				that.ctx.strokeStyle = "red";
+				that.ctx.rect(rubberbandRect.left, rubberbandRect.top, rubberbandRect.width, rubberbandRect.height);
+				that.ctx.stroke();
+				that.ctx.restore();
+		}
+		
+		
+		//右键Canvas事件
+		that.canvas.addEventListener('contextmenu', function(ev) {
+			var event = ev || window.event;
+			clickRightMenu.style.display = "block";
+			clickRightMenu.style.left = event.clientX + "px";
+			clickRightMenu.style.top = event.clientY + "px";
+			ev.preventDefault();
+			return false;
+		});
+		//点击重置
+		clickReset.addEventListener('click', function(ev) {
+			$("#input_center").val(0)
+			$("#input_span").val(18.75)
+			$("#input_level").val('')
+			clickRightMenu.style.display = "none";
+		});
+		//显示二级菜单
+		clickCancel.addEventListener("onmousemove", function(ev){
+			var event = ev || window.eval
+			
+		}, false)
+		//点击返回上一次绘图
+		clickCancel.addEventListener('click', function(ev) {
+			clickRightMenu.style.display = "none";
+		});
+		//鼠标按下的时候，记录坐标，并设置为拖拽状态
+    that.canvas.onmousedown = function (e) {
+			if(e.button === 2) return false
+			var loc = windowToCanvas(e.clientX, e.clientY);
+			const {x , y} = {x:loc.x-100,y: loc.y-80};
+			if((x>0 && x<800)&&(y>0 && y<640) && !dragging){
+				clickRightMenu.style.display = "none";
+				// console.log("按下操作")
+				e.preventDefault();
+				saveDrawingSurface();
+				mousedown.startX = loc.x;
+				mousedown.startY = loc.y;
+				dragging = true;
+			}
+		}
+		/**
+		 * （鼠标按下之后）鼠标移动的时候
+		 * 判断拖拽中：更新当前连线的位置
+		 * 判断辅助线显示：添加辅助线
+		 */
+		that.canvas.onmousemove = function (e) {
+				var loc = windowToCanvas(e.clientX, e.clientY);
+				const {x , y} = {x:loc.x-100,y: loc.y-80};
+				if (dragging && (x>0 && x<800)&&(y>0 && y<640)) {
+						e.preventDefault();
+						restoreDrawingSurface();
+						updateRubberband(loc);
+						drawGuidewires(loc.x, loc.y);
+				}
+		}
+		/**
+		 * (拖拽完成后)当鼠标松开时，重新获取本点坐标，清除之前的"跟随鼠标移动的线"，更新连线，取消拖拽状态
+		 */
+		that.canvas.onmouseup = function (e) {
+			if(e.button === 2) return false
+			var loc = windowToCanvas(e.clientX, e.clientY);
+			const {x , y} = {x:loc.x-100,y: loc.y-80};
+			if((x>0 && x<800)&&(y>0 && y<640) && dragging){ // (x - mousedown.startX) > 50 限制最小矩形
+				// console.log("松开操作")
+				mousedown.endX = loc.x;
+				mousedown.endY = loc.y;
+				restoreDrawingSurface();
+				updateRubberband(loc);
+				drawlLine();
+				dragging = false;
+			}
+		};
+
 	//根据x轴计算y轴
 	_.prototype.addMark = function() {
 		var obj = {};
@@ -406,87 +590,6 @@ var sm_pin = (function() {
 		this.markerList[0].y = this.canvas.height / 2 - this.data[parseInt(index)] / 2 - 5;
 	}
 
-	//添加鼠标移动事件
-	_.prototype.mousemove = function() {
-		var that = this;
-		if (this.type === "sincurve") return;
-		this.canvas.addEventListener('mousemove', function(ev) {
-			var x, y;
-			if (ev.layerX || ev.layerX == 0) {
-				x = ev.layerX;
-				y = ev.layerY;
-			} else if (ev.offsetX || ev.offsetX == 0) {
-				x = ev.offsetX;
-				y = ev.offsetY;
-			}
-			// that.markerList[0].x=x;
-			// that.markerList[0].y=y;
-			for (var i = 0; i < that.markerList.length; i++) {
-				(function(a) {
-					if (parseInt(that.markerList[a].x) === x && parseInt(that.markerList.y) === y) {
-					}
-				})(i)
-			}
-		}, false)
-	}
-	_.prototype.mousePeak = function() {
-		var that = this;
-		if (this.type === 'sincurve') return;
-		this.canvas.addEventListener('mousedown', function(ev) {
-			var x, y;
-			if (ev.layerX || ev.layerX == 0) {
-				x = ev.layerX;
-				y = ev.layerY;
-			} else if (ev.offsetX || ev.offsetX == 0) {
-				x = ev.offsetX;
-				y = ev.offsetY;
-			}
-			for (var i = 0; i < that.markerList.length; i++) {
-				(function(a) {
-					if (x < (that.markerList[a].x + 10) && x > (that.markerList[a].x - 10)) {
-						if (y < (that.markerList[a].y + 10) && y > (that.markerList[a].y - 10)) {
-							that.markerList[a].showlight = true;
-							// that.showLight(that.markerList[a]);
-						}
-					}
-				})(i)
-			}
-		})
-	}
-	//鼠标按下并且放开时的操作，对与标记符号。
-	_.prototype.mouseDrop = function() {
-		var that = this;
-		this.canvas.addEventListener('mousedown', function(ev) {
-			var x, y;
-			if (ev.layerX || ev.layerX == 0) {
-				x = ev.layerX;
-				y = ev.layerY;
-			} else if (ev.offsetX || ev.offsetX == 0) {
-				x = ev.offsetX;
-				y = ev.offsetY;
-			}
-			that.canvas.addEventListener('mouseup', function(ev) {
-				var x, y;
-				if (ev.layerX || ev.layerX == 0) {
-					x = ev.layerX;
-					y = ev.layerY;
-				} else if (ev.offsetX || ev.offsetX == 0) {
-					x = ev.offsetX;
-					y = ev.offsetY;
-				}
-				for (var i = 0; i < that.markerList.length; i++) {
-					(function(a) {
-						if (that.markerList[a].showlight) {
-							that.markerList[a].x = x;
-							that.markerList[a].y = that.canvas.height / 2 - that.data[parseInt(x - that.canvas.width * 0.1)] / 2 - 5;
-							that.markerList[a].showlight = false;
-						}
-					})(i)
-				}
-			}, false)
-
-		}, false)
-	}
 	_.prototype.showLight = function(obj) {
 		this.ctx.fillText('<_>', obj.x, obj.y - 10)
 	}

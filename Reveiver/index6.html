@@ -110,8 +110,25 @@
 				font-size: 30px;
 			}
 
-			.my-radiobox{
-				
+			.ul_Menu{
+					width: 110px;
+					background-color: #fff;
+					font-size: 12px;
+					position: absolute;
+					text-align: left;
+					padding: 2px 0;
+					border:1px solid #ccc;
+					display: none;
+					z-index: 100;
+			}
+			.ul_Menu li{
+					list-style: none;
+					line-height: 20px;
+					padding-left: 25px;
+			}
+			.ul_Menu li:hover{
+					background-color: #dcdcdc;
+					cursor: pointer;
 			}
 		</style>
 	</head>
@@ -149,7 +166,7 @@
 			</div>
 
 			<div class="" style="width: 70%;height: 100%;overflow:hidden;">
-				<div style="z-index: 10">
+				<div style="position: absolute;top:0px;z-index: 10">
 					<ul id="myTab" class="nav nav-tabs" style="height:80px;font-size: 36px;padding: 2px;">
 						<li class="active"><a href="#bo" data-toggle="tab" style="height:80px;width: 200px;text-align:center;"> 波形图 </a></li>
 						<li><a href="#pin" data-toggle="tab" style="height:80px;width: 200px;text-align:center;"> 频谱图 </a></li>
@@ -157,7 +174,7 @@
 						<li><a href="#pu" data-toggle="tab" style="height:80px;width: 200px;text-align:center;"> 瀑布图 </a></li>
 					</ul>
 				</div>
-				<div style="position: fixed;top:750px;float:left;margin-left: 20px;z-index: 10;font-size:20px;">
+				<div style="position: fixed;top:750px;margin-left: 20px;z-index: 10;font-size:20px;">
 					<div style="margin-left: 30px;margin-top: 10px;display:inline;">中心频点:</div>
 					<input id="input_center" type="number" class="form-control" value="0" style="margin-left: 5px;width:100px;height:45px;line-height:40px ;font-size:20px;marginTop:4px;display:inline;">
 					<div style="margin-left: 2px;margin-top: 10px;display:inline;">kHz</div>
@@ -170,7 +187,7 @@
 					<input id="input_level" type="number" class="form-control" value="" style="margin-left: 5px;width:100px;height:45px;line-height:40px ;font-size:20px;marginTop:4px;display:inline;">
 					<div style="margin-left: 2px;margin-top: 10px;display:inline;">dB</div>
 				</div>
-				<div id="myTabContent" class="tab-content" style="position: relative;top: -75px;z-index: -1;">
+				<div id="myTabContent" class="tab-content" style="position: relative;top: 8px;z-index: 1;">
 					<div class="tab-pane fade  in active" id="bo">
 						<!--中频显示区域-->
 						<div class="row" style="height:50vh;">
@@ -178,7 +195,7 @@
 							<div style="text-align:center;width: 700px;display: none;">
 								<h4>波形图</h4>
 							</div>
-
+							<!-- <div id="sm_pin" style="width: 1000px;height:800px;margin-left: -30px;"></div> -->
 							<div id="sin_curve" style="width: 1000px;height:800px;margin-left: -30px;"></div>
 						</div>
 					</div>
@@ -189,6 +206,7 @@
 								<h4>频谱图<a id="freq_point" style="margin-left:20px"></a></h4>
 							</div>
 							<div id="sm_pin" style="width: 1000px;height:800px;margin-left: -30px;"></div>
+							<!-- <div id="sin_curve" style="width: 1000px;height:800px;margin-left: -30px;"></div> -->
 						</div>
 					</div>
 					<div class="tab-pane fade " id="yu">
@@ -209,6 +227,14 @@
 						</div>
 					</div>
 				</div>
+				<ul class="ul_Menu" id="clickRightMenu">
+					<li id="cvs_reset">重置</li>
+					<li id="cvs_cancel">取消绘制</li>
+				</ul>
+				<ul class="ul_Menu" id="colorMenus">
+					<li id="color_red">红色</li>
+					<li id="color_blue">蓝色</li>
+				</ul>
 			</div>
 		</div>
 
@@ -227,59 +253,38 @@
 			var pcmWorker = new Worker('webworker6.js');
 			pcmWorker.postMessage('12');
 			pcmWorker.onmessage = function(e) {
-
 				/* var arr = new Array();
 				for (var i = 0; i < 50; i++) {
 					var oo = Math.sin(i) * 100;
 					arr.push(Math.round(oo));
 				}*/
-
-
-
 				if (e.data[0] === 'I') {
-
 					e.data.shift(); //把数组的第一个元素从其中删除,并返回第一个元素的值
 					e.data.shift();
-
 					//var data = new Uint16Array(e.data);
-
 					//player.feed(data);
 					sinCurve.drawData(e.data.splice(0, 512));
-
-
 				} else if (e.data[0] === 'FFT') {
 					/* FFT 频谱数据*/
-
-
-
 					e.data.shift(); //把数组的第一个元素从其中删除,并返回第一个元素的值
 					e.data.shift();
+					// console.log("原始数据：",e.data)
 					var mdata = dealData(e.data);
 					smPin.drawData(mdata); //绘制频谱图.splice(0, 512)
-
 					// sinCurve.drawData(e.data);//绘制波形图
 					spectrumChart.drawData(mdata);
 					//yupu.drawData(mdata);
-
 					// var data = new Uint16Array(e.data);
-
 					// player.feed(data);
-
-
-
 				}
-
 			}
 			// 根据页面输入框的数据,进行数据处理
 			function dealData(data) {
 				var result;
-
 				var center = $("#input_center").val();
 				var span = $("#input_span").val();
-				
 				//console.log("center-span--", center, span);
 				if (center != "" && span != "") {
-
 					center = center * 1000;
 					span = span * 1000;
 					var _start_f = parseInt(center - span / 2);
@@ -296,8 +301,6 @@
 					var n1 = parseInt((_start_f + 18750 / 2) / bb);
 					var n2 = parseInt((_end_f + 18750 / 2) / bb);
 
-
-
 					var mdata = new Array();
 					if (stride < 1) {
 						for (var i = n1; i < n2; i++) {
@@ -305,36 +308,24 @@
 						}
 						return mdata;
 					} else {
-
 						for (var i = n1; i < n2; i++) {
 							//if(i>9040 && i<9080)
-
-
 							//从每stride中挑选最大的数
 							///var a = data[9066]<data[9067];
-
 							var aa = parseFloat(data[i]);
 							if (_max < aa) {
 								_max = aa;
-
 							}
 							if (i % stride == 0) {
-
-
-
 								mdata.push(_max);
 								_max = -1000000;
 								//_index = -1;
 							}
 						}
-
 						return mdata;
 					}
-
-
 					//return center + span + level + "";
 				} else {
-
 					return data;
 				}
 			}
