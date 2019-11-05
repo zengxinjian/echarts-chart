@@ -28,8 +28,9 @@
 		<script src="sm_pin6.js"></script>
 		<script src='sm_spectrogram6.js'></script>
 
-		<link rel="stylesheet" href="index6.css">
+		<link rel="stylesheet/css" type="text/css" href="index6.css">
 		<!-- <script src="static/hightstock.js"></script> -->
+
 	
 	</head>
 
@@ -65,7 +66,7 @@
 				</div>
 			</div>
 
-			<div class="" style="width: 70%;height: 100%;overflow:hidden;position: relative;">
+			<div class="" style="width: 70%;height: 100%;overflow:hidden;">
 				<div style="position: absolute;top:0px;z-index: 10;min-width: 870px;">
 					<ul id="myTab" class="nav nav-tabs" style="height:80px;font-size: 36px;padding: 2px;">
 						<li class="active"><a href="#bo" data-toggle="tab" style="height:80px;width: 200px;text-align:center;"> 波形图 </a></li>
@@ -74,27 +75,18 @@
 						<li><a href="#pu" data-toggle="tab" style="height:80px;width: 200px;text-align:center;"> 瀑布图 </a></li>
 					</ul>
 				</div>
-				<div class="all_amplitude">
-					<div>
-						<span class="amp_title">中心频点</span>
-						<input id="input_center" type="text" class="form-control amp_inp" value="0">
-						<span class="amp_company">kHz</span>
-					</div>
-					<div>
-						<span class="amp_title">扫宽</span>
-						<input id="input_span" type="text" class="form-control amp_inp" value="18.75">
-						<span class="amp_company">kHz</span>
-					</div>
-					<div>
-						<span class="amp_title">参考幅值</span>
-						<input id="input_level" type="text" class="form-control amp_inp" value="">
-						<span class="amp_company">dB</span>
-					</div>
-					<div>
-						<span class="amp_title">刷新频率</span>
-						<input id="input_refresh" type="text" class="form-control amp_inp" value="">
-						<span class="amp_company">Hz</span>
-					</div>
+				<div class="all_amplitude" style="">
+					<div class="amp_title">中心频点:</div>
+					<input id="input_center" type="number" class="form-control inp_sty" value="0">
+					<div style="margin-left: 2px;margin-top: 10px;display:inline-block;">kHz</div>
+
+					<div class="amp_title">扫宽:</div>
+					<input id="input_span" type="number" class="form-control inp_sty" value="18.75">
+					<div style="margin-left: 2px;margin-top: 10px;display:inline-block;">kHz</div>
+
+					<div class="amp_title">参考幅值:</div>
+					<input id="input_level" type="number" class="form-control inp_sty" value="">
+					<div style="margin-left: 2px;margin-top: 10px;display:inline-block;">dB</div>
 				</div>
 				<div id="myTabContent" class="tab-content" style="position: relative;top: 8px;z-index: 1;">
 					<div class="tab-pane fade  in active" id="bo">

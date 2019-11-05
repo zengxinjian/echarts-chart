@@ -60,7 +60,7 @@ var sm_pin = (function() {
 				var vtxt = parseInt(_start_f + i * _length_f / 800);
 				this.lineHTick.push(vtxt);
 				this.ctx.fillText(vtxt,
-					i + this.canvas.width * 0.1 + (i=== (this.canvas.width * 0.8) ? 5 :15),
+					i + this.canvas.width * 0.1 + 15,
 					this.canvas.height * 0.9 + 15)
 				this.ctx.stroke() //图形绘制
 			}
