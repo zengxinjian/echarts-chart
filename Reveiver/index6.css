@@ -10,32 +10,51 @@
   text-align: center;
 }
 #tags {
-  padding-right: 0px;
-  margin: 0px;
-  padding-top: 12px;
-  height: 15px;
-  padding-bottom: 26px;
-  background: #FFF none repeat scroll 0% 0% !important;
+  margin: 0px 0px 10px;
+  padding: 0 5px;
+  border-bottom: 1px solid rgba(51, 51, 51, 0.3);
+  display: flex;
+  flex-direction: row;
 }
 #tags li {
-  background: #FFF none repeat scroll 0% 0% !important;
-  border-bottom: 1px solid #FFF !important;
+  border-bottom: 0;
   font-size: 18px;
-  color: #4f4f4f;
-  float: left;
   list-style-type: none;
-  padding: 4px 10px;
   cursor: pointer;
 }
+#tags li a {
+  color: #555;
+  outline: none;
+  text-decoration: none;
+  padding: 10px 15px;
+  display: inline-block;
+}
 #tags li.selectTag {
-  margin-bottom: -1px;
   position: relative;
-  height: 15px;
-  border-width: 2px 1px 1px;
-  border-style: solid;
-  border-color: #F80 #DEDEDE #F8F8F8;
-  background-color: #E5EECC;
   z-index: 10;
+}
+#tags li.selectTag a {
+  color: #F80;
+  position: relative;
+}
+#tags li.selectTag a:before {
+  content: '';
+  background-color: #F80;
+  height: 2px;
+  width: 100%;
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+}
+.con_title {
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  font-size: 30px;
+  display: flex;
+  flex-direction: row;
+}
+.con_title div {
+  color: #555;
 }
 .tagContent {
   height: auto;
@@ -85,6 +104,32 @@ h4 {
 .ul_Menu li:hover {
   background-color: #dcdcdc;
   cursor: pointer;
+}
+.chart_tab {
+  width: 70%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+.chart_tab .tab_dv {
+  position: absolute;
+  top: 0px;
+  z-index: 10;
+  min-width: 870px;
+}
+.chart_tab .tab_dv .nav-tabs {
+  height: 80px;
+  font-size: 36px;
+  margin: 2px;
+}
+.chart_tab .tab_dv .nav-tabs li > a {
+  height: 80px;
+  width: 200px;
+  text-align: center;
+  color: #555;
+}
+.chart_tab .tab_dv .nav-tabs .active > a {
+  color: #F80;
 }
 .all_amplitude {
   position: absolute;

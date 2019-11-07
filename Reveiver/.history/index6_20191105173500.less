@@ -1,0 +1,134 @@
+
+* {
+  padding: 0px;
+  margin: 0px;
+}
+
+.row {
+  padding: 0px;
+  margin: 0px;
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+#tags {
+  margin: 0px 0px 10px;
+  padding: 0 5px;
+  // padding-bottom: 26px;
+  // background: #FFF none repeat scroll 0% 0% !important;
+  border-bottom: 1px solid rgba(51, 51, 51, 0.3);
+  display: flex;
+  flex-direction: row;
+}
+
+#tags li {
+  // background: #FFF none repeat scroll 0% 0% !important;
+  // border: 1px solid #333;
+  border-bottom: 0;
+  font-size: 18px;
+  list-style-type: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  a{
+    color: #333;
+    outline: none;
+    text-decoration: none;
+  }
+}
+#tags li:nth-child(1), #tags li:nth-child(2){
+  border-right: 0;
+}
+
+#tags li.selectTag {
+  // margin-bottom: -1px;
+  position: relative;
+  // border-width: 0px 1px 2px;
+  // border-style: solid;
+  // border-color:  #DEDEDE#F8F8F8 #F80 ;
+  border: 1px solid rgba(51, 51, 51, 0.3);
+  border-bottom: 2px solid #F80;
+  // background-color: #E5EECC;
+  color: #F80 !important;
+  bottom: -1px;
+  z-index: 10;
+}
+
+.tagContent {
+  height: auto;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+.col-md-3 {
+    width: 25%;
+  float: left;
+}
+.col-md-6 {
+    width: 50%;
+  float: left;
+}
+
+#tagContent2 {
+  display: none;
+}
+
+#tagContent3 {
+  display: none;
+}
+
+h4 {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.mytab {
+  /* height: 60px;
+  width: 100px; */
+  font-size: 30px;
+}
+
+.ul_Menu{
+    width: 110px;
+    background-color: #fff;
+    font-size: 12px;
+    position: absolute;
+    text-align: left;
+    padding: 2px 0;
+    border:1px solid #ccc;
+    display: none;
+    z-index: 100;
+}
+.ul_Menu li{
+    list-style: none;
+    line-height: 20px;
+    padding-left: 25px;
+}
+.ul_Menu li:hover{
+    background-color: #dcdcdc;
+    cursor: pointer;
+}
+
+
+
+.all_amplitude{
+  position: absolute;bottom: 0;;z-index: 10;min-width: 870px;
+  display: flex; flex-direction: row; justify-content: center; align-items: center;
+  padding-left: 25px;
+  div{
+    margin-right: 25px;
+    .amp_title{
+      font-size:16px;
+      display:inline-block;
+    }
+    .amp_company{
+      font-size:18px;
+      display:inline-block;
+    }
+    .amp_inp{
+      width:90px;line-height:40px ;font-size:20px;display:inline-block;padding: 0 5px;
+      margin: 0 0.5px;
+    }
+  }
+}
